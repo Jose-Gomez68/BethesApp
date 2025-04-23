@@ -30,20 +30,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.iglesiabethesta.bethestaapp.R
 import com.iglesiabethesta.bethestaapp.ui.theme.backgroundColorApp
 
 @Composable
-fun GroupScreen() {
-    Screen()
+fun GroupScreen(navController: NavHostController) {
+    Screen(navController)
 }
 
-@Preview
 @Composable
-fun Screen() {
+private fun Screen(navController: NavHostController) {
 
     val context = LocalContext.current
 
@@ -64,7 +63,7 @@ fun Screen() {
         }
 
         FloatingActionButton(
-            onClick = { Toast.makeText(context, "Click en nuevo grupo", Toast.LENGTH_SHORT).show() },
+            onClick = { navController.navigate("nuevoGrupo") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),

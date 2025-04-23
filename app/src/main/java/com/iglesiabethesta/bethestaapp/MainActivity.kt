@@ -1,9 +1,11 @@
 package com.iglesiabethesta.bethestaapp
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.iglesiabethesta.bethestaapp.events.ui.view.EventScreen
+import com.iglesiabethesta.bethestaapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesta.bethestaapp.group.ui.view.GroupScreen
 import com.iglesiabethesta.bethestaapp.home.ui.view.HomeScreen
 import com.iglesiabethesta.bethestaapp.me.ui.view.MeScreen
@@ -82,6 +85,7 @@ fun Toolbar(navController: NavController) {
         Routes.HomeScreen.route to "Inicio",
         Routes.MembersScreen.route to "Miembros",
         Routes.GroupsScreen.route to "Grupos",
+        Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.EventsScreen.route to "Eventos",
         Routes.MeScreen.route to "Perfil"
     )
@@ -137,6 +141,7 @@ fun MenuBottonNavigation(navController: NavController) {
 }
 
 //viedeo https://www.youtube.com/watch?v=Duidcy6ieUc
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modifier) {
 
@@ -147,7 +152,12 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
     ){
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen() }
-        composable(Routes.GroupsScreen.route) { GroupScreen() }
+        composable(Routes.GroupsScreen.route) { GroupScreen(navController) }
+        composable(
+            route = Routes.GroupsScreen.GroupRegisterScreen.route
+        ) {
+            GroupRegisterScreen()
+        }
         composable(Routes.EventsScreen.route) { EventScreen() }
         composable(Routes.MeScreen.route) { MeScreen() }
     }
