@@ -43,6 +43,10 @@ import androidx.compose.ui.unit.dp
 import com.iglesiabethesta.bethestaapp.R
 import com.iglesiabethesta.bethestaapp.ui.theme.backgroundColorApp
 
+/*
+firesbase
+* https://www.youtube.com/watch?v=hgLgedigea0*/
+
 @Preview
 @Composable
 fun MembersScreen() {
