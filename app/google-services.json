@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "575721759228",
+    "project_id": "bethestapp-b0657",
+    "storage_bucket": "bethestapp-b0657.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575721759228:android:03b9e56eb79940b4c69279",
+        "android_client_info": {
+          "package_name": "com.iglesiabethesta.bethestaapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIQHpJKPakqTqJOxc_-rDnBWC6aG18h4g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

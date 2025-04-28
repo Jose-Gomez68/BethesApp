@@ -34,6 +34,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import com.iglesiabethesta.bethestaapp.events.ui.view.EventScreen
 import com.iglesiabethesta.bethestaapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesta.bethestaapp.group.ui.view.GroupScreen
@@ -44,7 +46,12 @@ import com.iglesiabethesta.bethestaapp.navigationcompose.Routes
 import com.iglesiabethesta.bethestaapp.ui.theme.BethestaAppTheme
 import com.iglesiabethesta.bethestaapp.ui.theme.backgroundColorApp
 
+/**ACCOUNT GOOGLE DB BETHESTAPP
+ * bethestapp@gmail.com
+ * PASS:68120568App*/
+
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
