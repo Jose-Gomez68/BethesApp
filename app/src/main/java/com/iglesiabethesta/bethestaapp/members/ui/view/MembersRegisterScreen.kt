@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.iglesiabethesta.bethestaapp.R
 import com.iglesiabethesta.bethestaapp.ui.theme.backgroundColorApp
 
+@Preview
 @Composable
 fun MembersRegisterScreen() {
     Screen()

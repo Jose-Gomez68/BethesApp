@@ -34,8 +34,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
+import com.iglesiabethesta.bethestaapp.Login.ui.LoginScreen
+import com.iglesiabethesta.bethestaapp.Login.ui.SignUpScreen
 import com.iglesiabethesta.bethestaapp.events.ui.view.EventScreen
 import com.iglesiabethesta.bethestaapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesta.bethestaapp.group.ui.view.GroupScreen
@@ -65,10 +65,26 @@ class MainActivity : ComponentActivity() {
                 ) {
                     //Greeting("Android")
                     val navigationController = rememberNavController()
+                    val navBackStackEntry by navigationController.currentBackStackEntryAsState()
+                    val currentRoute = navBackStackEntry?.destination?.route ?: ""
+                    // Ocultar barras en estas rutas
+                    val hideBars = currentRoute in listOf(
+                        Routes.SplashScreen.route,
+                        Routes.LoginScreen.route,
+                        Routes.SignUp.route
+                    )
 
-                    Scaffold(//tengo que mandar el MenuBottonNavigation a una clase a parte
-                        topBar = { Toolbar(navController = navigationController) },
-                        bottomBar = { MenuBottonNavigation(navController = navigationController) }
+                    Scaffold(
+                        topBar = {
+                            if (!hideBars) {
+                                Toolbar(currentRoute)
+                            }
+                        },
+                        bottomBar = {
+                            if (!hideBars) {
+                                MenuBottonNavigation(navController = navigationController)
+                            }
+                        }
                     ) {
                         NavigationGraph(
                             navController = navigationController,
@@ -84,9 +100,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar(navController: NavController) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route ?: ""
+fun Toolbar(currentRoute: String) {
 
     val screenTitles = mapOf(
         Routes.HomeScreen.route to "Inicio",
@@ -154,9 +168,13 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
 
     NavHost(
         navController = navController,
-        startDestination = Routes.HomeScreen.route,
+        //startDestination = Routes.HomeScreen.route,
+        startDestination = Routes.SplashScreen.route,
         modifier = modifier
     ){
+        composable(Routes.SplashScreen.route) { AppSplashScreen(navController) }
+        composable(Routes.LoginScreen.route) { LoginScreen() }
+        composable(Routes.SignUp.route) { SignUpScreen() }
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen() }
         composable(Routes.GroupsScreen.route) { GroupScreen(navController) }

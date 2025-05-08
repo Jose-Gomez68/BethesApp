@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,9 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iglesiabethesta.bethestaapp.R
+import com.iglesiabethesta.bethestaapp.ui.theme.backgroundColorApp
 
 @Composable
-fun HomeScreen() {
+fun LoginScreen() {
     Screen()
 }
 
@@ -53,7 +53,7 @@ private fun Screen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Blue)
+            .background(backgroundColorApp)
     ){
         Column (
             modifier = Modifier
@@ -84,7 +84,9 @@ private fun HeaderView() {
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .clip(RoundedCornerShape(16.dp)),
+            .clip(RoundedCornerShape(16.dp))
+            .padding(horizontal = 16.dp)//agrege esto recientemente
+            .background(Color.Transparent),//agrege esto recientemente
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background), // usa el nombre real de tu imagen
@@ -92,7 +94,7 @@ private fun HeaderView() {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
                 .align(Alignment.TopCenter)
-            //.padding(16.dp)
+                .clip(RoundedCornerShape(16.dp))//agrege esto recientemente
         )
         Box(
             modifier = Modifier
