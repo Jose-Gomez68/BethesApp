@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.iglesiabethesta.bethestaapp"
+    namespace = "com.iglesiabethesda.bethesdapp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.iglesiabethesta.bethestaapp"
+        applicationId = "com.iglesiabethesda.bethesdapp"
         minSdk = 25
         targetSdk = 35
         versionCode = 1

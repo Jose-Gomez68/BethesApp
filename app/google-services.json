@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:575721759228:android:03b9e56eb79940b4c69279",
+        "mobilesdk_app_id": "1:575721759228:android:f944bbfaba1407c2c69279",
         "android_client_info": {
-          "package_name": "com.iglesiabethesta.bethestaapp"
+          "package_name": "com.iglesiabethesda.bethesdapp"
         }
       },
       "oauth_client": [],
