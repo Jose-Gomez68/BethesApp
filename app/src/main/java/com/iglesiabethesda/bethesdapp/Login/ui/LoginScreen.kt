@@ -89,7 +89,7 @@ private fun HeaderView() {
             .background(Color.Transparent),//agrege esto recientemente
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background), // usa el nombre real de tu imagen
+            painter = painterResource(id = R.mipmap.logo), // usa el nombre real de tu imagen
             contentDescription = "Logo",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
