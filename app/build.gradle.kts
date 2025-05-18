@@ -56,6 +56,7 @@ android {
 dependencies {
     val nav_version = "2.8.9"
     val daggerHilt_version = "2.51.1"
+    val daggerHiltCompose_version = "1.2.0"
 
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
@@ -78,6 +79,7 @@ dependencies {
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:$daggerHilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$daggerHilt_version")
+    implementation("androidx.hilt:hilt-navigation-compose:$daggerHiltCompose_version")//importante para usar navigation compose
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
