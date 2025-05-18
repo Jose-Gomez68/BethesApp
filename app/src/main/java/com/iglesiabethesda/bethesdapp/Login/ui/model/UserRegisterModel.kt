@@ -1,8 +1,8 @@
-package com.iglesiabethesda.bethesdapp.members.data
+package com.iglesiabethesda.bethesdapp.Login.ui.model
 
 import java.util.Date
 
-data class MembersModel(
+data class UserRegisterModel(
     val uid: String = "",
     val name:String,
     val apPaterno: String,
@@ -12,5 +12,5 @@ data class MembersModel(
     val tel: String,
     val emergencyContact: String,
     val email: String,
-    val birthDay: Date
+    val birdthDay: Date
 )

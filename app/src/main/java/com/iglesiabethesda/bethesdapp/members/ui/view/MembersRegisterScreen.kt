@@ -1,35 +1,25 @@
 package com.iglesiabethesda.bethesdapp.members.ui.view
 
-import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -41,26 +31,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.iglesiabethesda.bethesdapp.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.iglesiabethesda.bethesdapp.Login.viewmodel.UserRegisterViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import java.util.Calendar
 
-@Preview
 @Composable
-fun MembersRegisterScreen() {
-    Screen()
+fun MembersRegisterScreen(viewModel: UserRegisterViewModel = hiltViewModel()) {
+    Screen(viewModel)
 }
 
-@Preview
 @Composable
-private fun Screen() {
+private fun Screen(viewModel: UserRegisterViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,22 +57,31 @@ private fun Screen() {
         Column (
             modifier = Modifier
                 .fillMaxSize()
-                .align(Alignment.Center),
+                .align(Alignment.Center)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            FormRegister()
+            FormRegister(viewModel)
         }
 
     }
 }
 
 
-@Composable
-private fun FormRegister() {
 
-    var etGroupName by remember { mutableStateOf("") }
-    var etGroupDescrip by remember { mutableStateOf("") }
+@Composable
+private fun FormRegister(viewModel: UserRegisterViewModel) {
+
+   /* var etMemberName by remember { mutableStateOf("") }
+    var etMemberApPa by remember { mutableStateOf("") }
+    var etMemberApMa by remember { mutableStateOf("") }
+    var etMemberHobby by remember { mutableStateOf("") }
+    var etMemberJob by remember { mutableStateOf("") }
+    var etMemberTel by remember { mutableStateOf("") }
+    var etMemberEmergency by remember { mutableStateOf("") }
+    var etMemberEmail by remember { mutableStateOf("") }
+    var etMemberBirthDay by remember { mutableStateOf("") }*/
     var showDialog by remember { mutableStateOf(false) }
 
     Column(
@@ -93,16 +90,16 @@ private fun FormRegister() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Nombre del Grupo", // Aquí pones el nombre del usuario
+            text = "Nombre de la Persona", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
-        )
+            )
         Spacer(modifier = Modifier.height(8.dp))
         val containerColor = Color(0xFFF5F5F5)
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.memberName,
+            onValueChange = { viewModel.memberName = it },
             label = { Text("Ingresa el Nombre") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -118,7 +115,55 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Descripción", // Aquí pones el nombre del usuario
+            text = "Apellido Paterno", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberApPa,
+            onValueChange = { viewModel.memberApPa = it },
+            label = { Text("Ingresa el Apellido Paterno") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
+            )
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Apellido Materno", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberApMa,
+            onValueChange = { viewModel.memberApMa = it },
+            label = { Text("Ingresa el Apellido Materno") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
+            )
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = "Pasa tiempo", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
@@ -126,9 +171,9 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(8.dp))
         val containerColor1 = Color(0xFFF5F5F5)
         OutlinedTextField(
-            value = etGroupName,
-            onValueChange = { etGroupName = it },
-            label = { Text("Ingresa el Nombre") }, // Label flotante
+            value = viewModel.memberHobby,
+            onValueChange = { viewModel.memberHobby = it },
+            label = { Text("Descripcion") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier
                 .fillMaxWidth()
@@ -144,170 +189,186 @@ private fun FormRegister() {
             )
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Row(
+        Text(
+            text = "Oficio", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberJob,
+            onValueChange = { viewModel.memberJob = it },
+            label = { Text("Oficio (Opcional)") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text(
-                text = "Miembros que pertenecen al Grupo", // Aquí pones el nombre del usuario
-                style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                color = Color.Black,
-
-                )
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .size(48.dp) // Tamaño del botón
-                    .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
-                    .background(Color(0xFFF5F5F5)) // Fondo gris claro
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person, // Icono de usuario
-                    contentDescription = "Seleccionar usuario",
-                    tint = Color.Gray // Color gris para mantenerlo minimalista
-                )
-            }
-
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-        UserGroupList()
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = { /* Acción al presionar el botón */ },
-            modifier = Modifier
-                .fillMaxWidth() // Hace que el botón ocupe todo el ancho disponible
-                .height(50.dp), // Altura personalizada
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF197FE6), // Color de fondo #197FE6
-                contentColor = Color.White // Texto en color blanco
-            ),
-            shape = RoundedCornerShape(12.dp) // Bordes redondeados
-        ) {
-            Text(
-                text = "Guardar",
-                style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
-        }
-    }
-
-    if (showDialog) {
-        UserListSelectedDialogScreen(showDialog,
-            onDismiss = { showDialog = false } // Cerrar el diálogo al presionar fuera
         )
-    }
 
-}
+        Spacer(modifier = Modifier.height(8.dp))
 
-@Composable
-private fun UserGroupList() {
-    val userList = listOf(
-        "Juan Pérez - M, 30",
-        "María López - F, 25",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35"
-    )
+        Text(
+            text = "Telefono", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
 
-    if (userList.isNotEmpty()) {
-        LazyColumn(
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberTel,
+            onValueChange = { viewModel.memberTel = it },
+            label = { Text("Tel") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
+            )
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Contacto (Tel)", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberEmergency,
+            onValueChange = { viewModel.memberEmergency = it },
+            label = { Text("Contacto de Emergencia") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
+            )
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Correo Electronico", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberEmail,
+            onValueChange = { viewModel.memberEmail = it },
+            label = { Text("Email (Opcional)") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor,
+                unfocusedContainerColor = containerColor,
+                disabledContainerColor = containerColor,
+                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
+                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
+            )
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        BirthdayPicker(
+            selectedDate = viewModel.memberBirthDay,
+            onDateSelected = { viewModel.memberBirthDay = it }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = { viewModel.registerMember() },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1980E6)),
+            shape = RoundedCornerShape(16.dp),
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.7f)
-                .padding(start = 25.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
-            items(userList) { user ->
-                UserItem(user)
-            }
+            Text("Registrar", color = Color.White, fontWeight = FontWeight.Bold)
         }
+
     }
+
 }
 
-
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun UserItem(user: String) {
+private fun BirthdayPicker(
+    selectedDate: String,
+    onDateSelected: (String) -> Unit
+) {
+    var isDatePickerDialogOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(backgroundColorApp)
-            .padding(8.dp)
-            .border(2.dp, Color.Transparent, RoundedCornerShape(15.dp)) // Borde redondeado
-            .clip(RoundedCornerShape(11.dp))
-            .combinedClickable(
-                onClick = {
-                    Toast.makeText(context, "Click en ${user}", Toast.LENGTH_SHORT).show()
-                },
-                onLongClick = {
-                    Toast.makeText(context, "Long Click ", Toast.LENGTH_SHORT).show()
-                }
-            )
+    val containerColor = Color(0xFFF1F1F1)
 
-    ) {
-        UserImage(imageUser = 1)
-        UserDescrip(user)
-        Spacer(modifier = Modifier.weight(1f))
-        IconButton(
-            onClick = { /* Acción para seleccionar usuario */ },
-            modifier = Modifier
-                .size(48.dp) // Tamaño del botón
-                .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
-                .background(Color.Red) // Fondo gris claro
-        ) {
-            Icon(
-                imageVector = Icons.Default.Delete, // Icono de usuario
-                contentDescription = "Eliminar usuario",
-                tint = Color.Black // Color gris para mantenerlo minimalista
-            )
+    if (isDatePickerDialogOpen) {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _: DatePicker, year: Int, month: Int, day: Int ->
+                val dayFormatted = day.toString().padStart(2, '0')
+                val monthFormatted = (month + 1).toString().padStart(2, '0')
+                val formattedDate = "$dayFormatted/$monthFormatted/$year"
+                onDateSelected(formattedDate) // ⬅️ Notifica al padre
+                isDatePickerDialogOpen = false
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.setCanceledOnTouchOutside(false)
+        datePickerDialog.setOnCancelListener {
+            isDatePickerDialogOpen = false
         }
+
+        datePickerDialog.show()
     }
-
-}
-
-@Composable
-private fun UserImage(imageUser: Int?) {
-    Image(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-        contentDescription = "Imagen del Usuario",
-        modifier = Modifier
-            .size(64.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary)
-    )
-}
-
-@Composable
-private fun UserDescrip(user: String) {
-
 
     Column(
         modifier = Modifier
-            .padding(start = 8.dp, top = 10.dp),
-        verticalArrangement = Arrangement.Center,
+            .fillMaxWidth()
+            .padding(top = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Selecciona tu fecha de nacimiento",
+            fontSize = 20.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(containerColor, shape = RoundedCornerShape(12.dp))
+                .border(1.dp, Color.Transparent, shape = RoundedCornerShape(12.dp))
+                .clickable { isDatePickerDialogOpen = true }
+                .padding(horizontal = 16.dp, vertical = 20.dp)
         ) {
-        Text(
-            text = "Nombre del Usuario", // Aquí pones el nombre del usuario
-            style = typography.bodyLarge,
-            color = Color.Black
-        )
-
-        Text(
-            text = "Sexo: M, Edad: 25", // Aquí pones el sexo y edad
-            style = typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
-            color = Color.Gray
-        )
+            Text(
+                modifier = Modifier.align(alignment = Alignment.Center),
+                text = if (selectedDate.isNotEmpty()) selectedDate else "Selecciona la fecha",
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+        }
     }
 }

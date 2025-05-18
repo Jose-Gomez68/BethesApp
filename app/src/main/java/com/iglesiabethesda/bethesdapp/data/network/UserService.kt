@@ -1,6 +1,7 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
+import com.iglesiabethesda.bethesdapp.members.data.MembersModel
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -10,8 +11,10 @@ import javax.inject.Inject
 class UserService @Inject constructor(private val firebase: FirebaseClient) {
 
     companion object {
-        const val  USER_COLLECTION = "users"
+        //const val  USER_COLLECTION = "users"
+        const val  USER_COLLECTION = "members"
     }
+
 
     suspend fun createUserTable(userSignIn: UserSignIn) = runCatching {
         val user = hashMapOf(
@@ -24,6 +27,31 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             .collection(USER_COLLECTION)
             .add(user).await()
 
+    }.isSuccess
+
+    suspend fun createMemberTable(membersModel: MembersModel): Boolean = runCatching {
+        val collection = firebase.db.collection(USER_COLLECTION)
+
+        // Generas manualmente el ID
+        val docRef = collection.document()
+        val uid = docRef.id
+
+        // Ahora puedes agregar ese UID como parte del hashMap
+        val user = hashMapOf(
+            "uid" to uid,
+            "name" to membersModel.name,
+            "apPaterno" to membersModel.apPaterno,
+            "apMaterno" to membersModel.apMaterno,
+            "hobby" to membersModel.hobby,
+            "jop" to membersModel.job,
+            "tel" to membersModel.tel,
+            "emergencyContact" to membersModel.emergencyContact,
+            "email" to membersModel.email,
+            "birthDay" to membersModel.birthDay
+        )
+
+        // Guardas el documento con ese ID
+        docRef.set(user).await()
     }.isSuccess
 
 }

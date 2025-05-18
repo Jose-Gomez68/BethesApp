@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
@@ -49,12 +50,12 @@ firesbase
 
 @Preview
 @Composable
-fun MembersScreen() {
-    Screen()
+fun MembersScreen(navController: NavHostController) {
+    Screen(navController)
 }
 
 @Composable
-private fun Screen() {
+private fun Screen(navController: NavHostController) {
 
     /*val searchQuery by remember {
         mutableStateOf("")
@@ -84,7 +85,7 @@ private fun Screen() {
             UsersList()
         }
 
-        MultiOptionFAB()
+        MultiOptionFAB(navController)
 
     }
 }
@@ -127,7 +128,7 @@ private fun SearchFieldList(titleLabel: String, searchQuery: String, onSearchCha
 }
 
 @Composable
-fun MultiOptionFAB() {
+fun MultiOptionFAB(navController: NavHostController) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(
@@ -146,6 +147,7 @@ fun MultiOptionFAB() {
                     onClick = {
                         // Acción 1
                         expanded = false
+                        navController.navigate("RegistrarUsuario")
                     }
                 )
 

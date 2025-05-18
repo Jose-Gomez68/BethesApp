@@ -272,7 +272,7 @@ private fun FormRegister() {
 }
 
 @Composable
-fun BirthdayPicker() {
+private fun BirthdayPicker() {
     var selectedDate by remember { mutableStateOf("Selecciona la fecha") }
     var isDatePickerDialogOpen by remember { mutableStateOf(false) }
 

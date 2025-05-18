@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,15 +42,18 @@ import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
 import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
 import com.iglesiabethesda.bethesdapp.me.ui.view.MeScreen
+import com.iglesiabethesda.bethesdapp.members.ui.view.MembersRegisterScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersScreen
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.BethestaAppTheme
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import dagger.hilt.android.AndroidEntryPoint
 
 /**ACCOUNT GOOGLE DB BETHESTAPP
  * bethestapp@gmail.com
  * PASS:68120568App*/
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -105,6 +109,7 @@ fun Toolbar(currentRoute: String) {
     val screenTitles = mapOf(
         Routes.HomeScreen.route to "Inicio",
         Routes.MembersScreen.route to "Miembros",
+        Routes.MembersScreen.MembersRegisterScreen.route to "Registrar Usuario",
         Routes.GroupsScreen.route to "Grupos",
         Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.EventsScreen.route to "Eventos",
@@ -164,7 +169,10 @@ fun MenuBottonNavigation(navController: NavController) {
 //viedeo https://www.youtube.com/watch?v=Duidcy6ieUc
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modifier) {
+fun NavigationGraph(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
 
     NavHost(
         navController = navController,
@@ -176,7 +184,12 @@ fun NavigationGraph(navController: NavHostController, modifier: Modifier = Modif
         composable(Routes.LoginScreen.route) { LoginScreen() }
         composable(Routes.SignUp.route) { SignUpScreen() }
         composable(Routes.HomeScreen.route) { HomeScreen() }
-        composable(Routes.MembersScreen.route) { MembersScreen() }
+        composable(Routes.MembersScreen.route) { MembersScreen(navController) }
+        composable(
+            Routes.MembersScreen.MembersRegisterScreen.route
+        ) {
+            MembersRegisterScreen()
+        }
         composable(Routes.GroupsScreen.route) { GroupScreen(navController) }
         composable(
             route = Routes.GroupsScreen.GroupRegisterScreen.route
