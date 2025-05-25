@@ -21,7 +21,8 @@ class CreateAccountUseCase @Inject constructor(
 
     suspend operator fun invoke(userSignIn: UserSignIn, membersModel: MembersModel): Boolean {
         val accountCreated =
-            authenticationService.createAccount(userSignIn.email, userSignIn.password) != null
+            authenticationService.createAccount(userSignIn.email, userSignIn.password,
+                "${membersModel.name} ${membersModel.apPaterno} ${membersModel.apMaterno}") != null
         return if (accountCreated) {
             /*TRATAR DE QUE COINCIDAN EL UID DEL REGISTRO CON LA DEL AUTH DE EMAIL*/
             userService.createUserTable(userSignIn)

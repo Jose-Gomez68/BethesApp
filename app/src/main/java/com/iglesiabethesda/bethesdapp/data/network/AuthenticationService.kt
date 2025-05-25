@@ -3,6 +3,7 @@ package com.iglesiabethesda.bethesdapp.data.network
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
 import kotlinx.coroutines.delay
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -24,8 +25,22 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         firebase.auth.createUserWithEmailAndPassword(email, password).await()
     }.toLoginResult()
 
-    suspend fun createAccount(email: String, password: String): AuthResult? {
-        return firebase.auth.createUserWithEmailAndPassword(email, password).await()
+    suspend fun createAccount(email: String, password: String, userName: String): AuthResult? {
+        // Crear usuario
+        val authResult = firebase.auth.createUserWithEmailAndPassword(email, password).await()
+
+        // Obtener el usuario recién creado
+        val user = authResult.user
+
+        // Actualizar el perfil con el displayName
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(userName)
+            .build()
+
+        user?.updateProfile(profileUpdates)?.await()
+
+        return authResult
+        //return firebase.auth.createUserWithEmailAndPassword(email, password).await()
     }
 
     suspend fun sendVerificationEmail() = runCatching {

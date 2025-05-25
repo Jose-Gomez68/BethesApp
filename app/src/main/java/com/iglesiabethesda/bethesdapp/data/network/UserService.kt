@@ -30,11 +30,12 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
     }.isSuccess
 
     suspend fun createMemberTable(membersModel: MembersModel): Boolean = runCatching {
+        val uid = firebase.auth.currentUser?.uid ?: throw Exception("No UID found")
         val collection = firebase.db.collection(USER_COLLECTION)
 
         // Generas manualmente el ID
-        val docRef = collection.document()
-        val uid = docRef.id
+       /* val docRef = collection.document()
+        val uid = docRef.id*/
 
         // Ahora puedes agregar ese UID como parte del hashMap
         val user = hashMapOf(
@@ -47,11 +48,13 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "tel" to membersModel.tel,
             "emergencyContact" to membersModel.emergencyContact,
             "email" to membersModel.email,
-            "birthDay" to membersModel.birthDay
+            "birthDay" to membersModel.birthDay,
+            "statusAccount" to membersModel.statusAccount
         )
 
         // Guardas el documento con ese ID
-        docRef.set(user).await()
+        //docRef.set(user).await()
+        firebase.db.collection(USER_COLLECTION).document(uid).set(user).await()
     }.isSuccess
 
 }
