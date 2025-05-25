@@ -45,7 +45,7 @@ class UserRegisterViewModel @Inject constructor(
 
 
         val member = MembersModel("",memberName,memberApPa,memberApMa, memberHobby, memberJob,
-            memberTel, memberEmergency, memberEmail,  dateFormat.parse(memberBirthDay) ?: Date()
+            memberTel, memberEmergency, memberEmail,  dateFormat.parse(memberBirthDay) ?: Date(), 1
         )
 
         val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568", "68120568")

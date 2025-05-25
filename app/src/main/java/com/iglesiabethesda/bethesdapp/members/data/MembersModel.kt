@@ -12,5 +12,6 @@ data class MembersModel(
     val tel: String,
     val emergencyContact: String,
     val email: String,
-    val birthDay: Date
+    val birthDay: Date,
+    val statusAccount: Int
 )
