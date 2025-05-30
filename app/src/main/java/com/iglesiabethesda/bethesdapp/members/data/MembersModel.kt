@@ -13,5 +13,7 @@ data class MembersModel(
     val emergencyContact: String,
     val email: String,
     val birthDay: Date,
-    val statusAccount: Int
+    val statusAccount: Int,
+    val createdDate: Date,
+    val updateDate: Date
 )

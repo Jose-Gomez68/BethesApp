@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.Login.domain.CreateAccountUseCase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -30,6 +31,7 @@ class UserRegisterViewModel @Inject constructor(
     var memberEmergency by mutableStateOf("")
     var memberEmail by mutableStateOf("")
     var memberBirthDay by mutableStateOf("")
+    val utilsFunctions: UtilsFunctions = UtilsFunctions()
 
     fun registerMember() {
         println("Nombre: $memberName")
@@ -41,11 +43,10 @@ class UserRegisterViewModel @Inject constructor(
         println("Emergencia: $memberEmergency")
         println("Email: $memberEmail")
         println("Fecha Nacimiento: $memberBirthDay")
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-
 
         val member = MembersModel("",memberName,memberApPa,memberApMa, memberHobby, memberJob,
-            memberTel, memberEmergency, memberEmail,  dateFormat.parse(memberBirthDay) ?: Date(), 1
+            memberTel, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 1,
+            utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()
         )
 
         val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568", "68120568")

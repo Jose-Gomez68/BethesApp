@@ -2,6 +2,7 @@ package com.iglesiabethesda.bethesdapp.data.network
 
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -32,6 +33,11 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
     suspend fun createMemberTable(membersModel: MembersModel): Boolean = runCatching {
         val uid = firebase.auth.currentUser?.uid ?: throw Exception("No UID found")
         val collection = firebase.db.collection(USER_COLLECTION)
+        var memberCode = UtilsFunctions().generateMemberCode(
+            name = membersModel.name,
+            apPaterno = membersModel.apPaterno,
+            birthDate = membersModel.birthDay
+            )
 
         // Generas manualmente el ID
        /* val docRef = collection.document()
@@ -40,6 +46,7 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         // Ahora puedes agregar ese UID como parte del hashMap
         val user = hashMapOf(
             "uid" to uid,
+            "membersCode" to memberCode,
             "name" to membersModel.name,
             "apPaterno" to membersModel.apPaterno,
             "apMaterno" to membersModel.apMaterno,
@@ -49,7 +56,9 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "emergencyContact" to membersModel.emergencyContact,
             "email" to membersModel.email,
             "birthDay" to membersModel.birthDay,
-            "statusAccount" to membersModel.statusAccount
+            "statusAccount" to membersModel.statusAccount,
+            "createdDate" to membersModel.createdDate,
+            "updateDate" to membersModel.updateDate
         )
 
         // Guardas el documento con ese ID
