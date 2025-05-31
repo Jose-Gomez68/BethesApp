@@ -80,6 +80,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$daggerHilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$daggerHilt_version")
     implementation("androidx.hilt:hilt-navigation-compose:$daggerHiltCompose_version")//importante para usar navigation compose
+    // Coil para Compose
+    implementation("io.coil-kt:coil-compose:2.4.0")
+// Soporte para GIFs animados
+    implementation("io.coil-kt:coil-gif:2.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
