@@ -23,6 +23,8 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "nickname" to userSignIn.nickName,
             "realname" to userSignIn.realName,
             "statusAccount" to userSignIn.statusAccount,
+            "createdDate" to userSignIn.createdDate,
+            "updateDate" to userSignIn.updateDate
 
         )
 

@@ -42,11 +42,13 @@ class UserRegisterViewModel @Inject constructor(
         println("Fecha Nacimiento: $memberBirthDay")
 
         val member = MembersModel("",memberName,memberApPa,memberApMa, memberHobby, memberJob,
-            memberTel, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 1,
+            memberTel, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 2,
             utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()
         )
 
-        val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568", "68120568", 1)
+        val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568",
+            "68120568", 1, utilsFunctions.getCurrentDateTime(),
+            utilsFunctions.getCurrentDateTime())
         viewModelScope.launch {
             val createdAccount = createAccountUseCase.invoke(userSignIn, member)
             if (createdAccount) {
