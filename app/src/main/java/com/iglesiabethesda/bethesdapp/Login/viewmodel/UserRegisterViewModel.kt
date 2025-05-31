@@ -12,9 +12,6 @@ import com.iglesiabethesda.bethesdapp.members.data.MembersModel
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -49,7 +46,7 @@ class UserRegisterViewModel @Inject constructor(
             utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()
         )
 
-        val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568", "68120568")
+        val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568", "68120568", 1)
         viewModelScope.launch {
             val createdAccount = createAccountUseCase.invoke(userSignIn, member)
             if (createdAccount) {

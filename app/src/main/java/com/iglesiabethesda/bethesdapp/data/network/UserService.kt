@@ -21,7 +21,9 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         val user = hashMapOf(
             "email" to userSignIn.email,
             "nickname" to userSignIn.nickName,
-            "realname" to userSignIn.realName
+            "realname" to userSignIn.realName,
+            "statusAccount" to userSignIn.statusAccount,
+
         )
 
         firebase.db
@@ -38,6 +40,10 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             apPaterno = membersModel.apPaterno,
             birthDate = membersModel.birthDay
             )
+
+        /**
+         * ACTUALIZAR EL CAMPO DE statusAccount
+         * CUANDO SE CONFIRME LA CUENTA DESDE EL CORREO */
 
         // Generas manualmente el ID
        /* val docRef = collection.document()
@@ -56,7 +62,7 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "emergencyContact" to membersModel.emergencyContact,
             "email" to membersModel.email,
             "birthDay" to membersModel.birthDay,
-            "statusAccount" to membersModel.statusAccount,
+            "statusAccount" to membersModel.statusAccount,// creo debe de ir createUserTable
             "createdDate" to membersModel.createdDate,
             "updateDate" to membersModel.updateDate
         )
