@@ -39,8 +39,18 @@ import androidx.compose.ui.unit.sp
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import java.util.Calendar
 
+/**
+ * ICONOS GRATIS ANIMADOS https://iconos8.es/icons/set/church-loading--animated*/
 @Composable
 fun SignUpScreen() {
+
+    /**
+     * ACTUALIZAR EL CAMPO DE statusAccount
+     * CUANDO SE CONFIRME LA CUENTA DESDE EL CORREO
+     * RECUERDA QUE IRA LA PANTALLA DE CARGA HASTA QUE VERIFIQUEMOS LA CUENTA
+     * AHI HAREMOS UN UPDATE A LA USERACCOUNT*/
+
+
     Screen()
 }
 
@@ -80,7 +90,7 @@ private fun FormRegister() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Nombre del Usuario", // Aquí pones el nombre del usuario
+            text = "Codigo de Miembro", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
@@ -90,7 +100,7 @@ private fun FormRegister() {
         OutlinedTextField(
             value = etGroupDescrip,
             onValueChange = { etGroupDescrip = it },
-            label = { Text("Ingresa el Nombre") }, // Label flotante
+            label = { Text("Ingresa el Codigo") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -105,7 +115,7 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Apellido Paterno", // Aquí pones el nombre del usuario
+            text = "Correo Electronico", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
@@ -114,7 +124,7 @@ private fun FormRegister() {
         OutlinedTextField(
             value = etGroupDescrip,
             onValueChange = { etGroupDescrip = it },
-            label = { Text("Ingresa el Apellido Paterno") }, // Label flotante
+            label = { Text("Ingresa el Correo Electronico") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -129,7 +139,7 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Apellido Materno", // Aquí pones el nombre del usuario
+            text = "Contraseña", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
@@ -138,7 +148,7 @@ private fun FormRegister() {
         OutlinedTextField(
             value = etGroupDescrip,
             onValueChange = { etGroupDescrip = it },
-            label = { Text("Ingresa el Apellido Materno") }, // Label flotante
+            label = { Text("Ingresa una Contraseña") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -153,36 +163,7 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Pasa tiempo", // Aquí pones el nombre del usuario
-            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            color = Color.Black,
-
-            )
-        Spacer(modifier = Modifier.height(8.dp))
-        val containerColor1 = Color(0xFFF5F5F5)
-        OutlinedTextField(
-            value = etGroupName,
-            onValueChange = { etGroupName = it },
-            label = { Text("Descripcion") }, // Label flotante
-            shape = RoundedCornerShape(12.dp), // Bordes redondeados
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 150.dp),
-            maxLines = 5,
-            singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = containerColor1,
-                unfocusedContainerColor = containerColor1,
-                disabledContainerColor = containerColor1,
-                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
-                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
-            )
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Oficio", // Aquí pones el nombre del usuario
+            text = "Repita Contraseña", // Aquí pones el nombre del usuario
             style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
             color = Color.Black,
 
@@ -191,7 +172,7 @@ private fun FormRegister() {
         OutlinedTextField(
             value = etGroupDescrip,
             onValueChange = { etGroupDescrip = it },
-            label = { Text("Oficio (Opcional)") }, // Label flotante
+            label = { Text("Repita Contraseña") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
             colors = OutlinedTextFieldDefaults.colors(
@@ -203,56 +184,7 @@ private fun FormRegister() {
             )
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Telefono", // Aquí pones el nombre del usuario
-            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            color = Color.Black,
-
-            )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
-            label = { Text("Tel") }, // Label flotante
-            shape = RoundedCornerShape(12.dp), // Bordes redondeados
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = containerColor,
-                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
-                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
-            )
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Contacto", // Aquí pones el nombre del usuario
-            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-            color = Color.Black,
-
-            )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
-            label = { Text("Contacto de Emergencia") }, // Label flotante
-            shape = RoundedCornerShape(12.dp), // Bordes redondeados
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = containerColor,
-                unfocusedContainerColor = containerColor,
-                disabledContainerColor = containerColor,
-                focusedBorderColor = Color.Blue, // Color del borde cuando está seleccionado
-                unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
-            )
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        BirthdayPicker()
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -271,74 +203,3 @@ private fun FormRegister() {
 
 }
 
-@Composable
-private fun BirthdayPicker() {
-    var selectedDate by remember { mutableStateOf("Selecciona la fecha") }
-    var isDatePickerDialogOpen by remember { mutableStateOf(false) }
-
-    val containerColor = Color(0xFFF1F1F1)
-    val context = LocalContext.current
-
-    // Mostrar DatePicker al abrir el diálogo
-    if (isDatePickerDialogOpen) {
-        val calendar = Calendar.getInstance()
-        val datePickerDialog = DatePickerDialog(
-            context,
-            { _: DatePicker, year: Int, month: Int, day: Int ->
-                val dayFormatted = day.toString().padStart(2, '0')
-                val monthFormatted = (month + 1).toString().padStart(2, '0')
-                selectedDate = "$dayFormatted/$monthFormatted/$year"
-                isDatePickerDialogOpen = false
-            },
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH),
-            calendar.get(Calendar.DAY_OF_MONTH)
-        )
-
-        // Evitar que se cierre al tocar fuera
-        datePickerDialog.setCanceledOnTouchOutside(false)
-        datePickerDialog.setOnCancelListener {
-            isDatePickerDialogOpen = false // Asegura que se cierre si se cancela manualmente
-        }
-
-        datePickerDialog.show()
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Selecciona tu fecha de nacimiento",
-            fontSize = 20.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-
-        // Caja simulando el OutlinedTextField
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(containerColor, shape = RoundedCornerShape(12.dp))
-                .border(1.dp, Color.Transparent, shape = RoundedCornerShape(12.dp))
-                .clickable { isDatePickerDialogOpen = true }
-                .padding(horizontal = 16.dp, vertical = 20.dp)
-        ) {
-            Text(
-                modifier = Modifier.align(alignment = Alignment.Center),
-                text = selectedDate,
-                fontSize = 16.sp,
-                color = Color.Black
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-       /* Button(onClick = {
-            isDatePickerDialogOpen = true
-        }) {
-            Text("Confirmar")
-        }*/
-    }
-}
