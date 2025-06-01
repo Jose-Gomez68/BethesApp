@@ -84,6 +84,10 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 // Soporte para GIFs animados
     implementation("io.coil-kt:coil-gif:2.4.0")
+    //Timber
+    implementation("com.jakewharton.timber:timber:5.0.1")
+    //liveData
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
