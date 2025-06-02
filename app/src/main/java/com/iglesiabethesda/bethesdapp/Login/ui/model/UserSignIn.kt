@@ -3,6 +3,7 @@ package com.iglesiabethesda.bethesdapp.Login.ui.model
 import java.util.Date
 
 data class UserSignIn(
+    val uidMember: String,
     val realName: String,
     val nickName: String,
     val email: String,

@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.SignUpScreen
+import com.iglesiabethesda.bethesdapp.Login.ui.VerificationScreen
 import com.iglesiabethesda.bethesdapp.events.ui.view.EventScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
@@ -183,6 +183,7 @@ fun NavigationGraph(
         composable(Routes.SplashScreen.route) { AppSplashScreen(navController) }
         composable(Routes.LoginScreen.route) { LoginScreen() }
         composable(Routes.SignUp.route) { SignUpScreen() }
+        composable(Routes.VerificationScreen.route) { VerificationScreen(navController) }
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen(navController) }
         composable(

@@ -6,6 +6,7 @@ sealed class Routes (val title: String, val icon: Int, val route: String) {
     object SplashScreen: Routes( "AppSplashScreen", R.drawable.ic_launcher_background, "AppSplashScreen" )
     object LoginScreen: Routes( "LoginScreen", R.drawable.ic_launcher_background, "LoginScreen" )
     object SignUp: Routes( "SignUp", R.drawable.ic_launcher_background, "SignUp" )
+    object VerificationScreen: Routes( "VerificationScreen", R.drawable.ic_launcher_background, "VerificationScreen" )
     object HomeScreen: Routes( "inicio", R.drawable.ic_home, "inicio" )
     object MembersScreen: Routes( "usuarios", R.drawable.ic_users, "usuarios" ) {
         object MembersRegisterScreen: Routes( "RegisterUser", R.drawable.ic_users, "RegistrarUsuario" )

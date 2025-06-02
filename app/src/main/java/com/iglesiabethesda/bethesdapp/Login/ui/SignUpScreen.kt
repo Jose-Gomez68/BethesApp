@@ -36,27 +36,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.iglesiabethesda.bethesdapp.Login.viewmodel.SignUpViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import java.util.Calendar
 
 /**
  * ICONOS GRATIS ANIMADOS https://iconos8.es/icons/set/church-loading--animated*/
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
 
     /**
+     * CONDICION PARA CUANDO SE INICIE SESION SABER
+     * A DONDE MANDAR SI AL
+     *
      * ACTUALIZAR EL CAMPO DE statusAccount
      * CUANDO SE CONFIRME LA CUENTA DESDE EL CORREO
      * RECUERDA QUE IRA LA PANTALLA DE CARGA HASTA QUE VERIFIQUEMOS LA CUENTA
      * AHI HAREMOS UN UPDATE A LA USERACCOUNT*/
 
 
-    Screen()
+    Screen(viewModel)
 }
 
-@Preview
+//@Preview
 @Composable
-private fun Screen() {
+private fun Screen(viewModel: SignUpViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,7 +75,7 @@ private fun Screen() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            FormRegister()
+            FormRegister(viewModel)
         }
 
     }
@@ -78,11 +83,15 @@ private fun Screen() {
 
 
 @Composable
-private fun FormRegister() {
+private fun FormRegister(viewModel: SignUpViewModel) {
 
-    var etGroupName by remember { mutableStateOf("") }
-    var etGroupDescrip by remember { mutableStateOf("") }
-    var showDialog by remember { mutableStateOf(false) }
+    /*var etSignupMemberCode by remember { mutableStateOf("") }
+    var etSignupName by remember { mutableStateOf("") }
+    var etSignupEmail by remember { mutableStateOf("") }
+    var etSignupRepeatEmail by remember { mutableStateOf("") }
+    var etSignupPass by remember { mutableStateOf("") }
+    var etSignupRepeatPass by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }*/
 
     Column(
         modifier = Modifier
@@ -98,8 +107,8 @@ private fun FormRegister() {
         Spacer(modifier = Modifier.height(8.dp))
         val containerColor = Color(0xFFF5F5F5)
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.etSignupMemberCode,
+            onValueChange = { viewModel.etSignupMemberCode = it },
             label = { Text("Ingresa el Codigo") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -112,6 +121,15 @@ private fun FormRegister() {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberCodeError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -122,8 +140,8 @@ private fun FormRegister() {
             )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.etSignupEmail,
+            onValueChange = { viewModel.etSignupEmail = it },
             label = { Text("Ingresa el Correo Electronico") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -135,7 +153,15 @@ private fun FormRegister() {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
-
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.emailError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -146,8 +172,8 @@ private fun FormRegister() {
             )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.etSignupPass,
+            onValueChange = { viewModel.etSignupPass = it },
             label = { Text("Ingresa una Contraseña") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -159,7 +185,15 @@ private fun FormRegister() {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
-
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.passwordError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -170,8 +204,8 @@ private fun FormRegister() {
             )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.etSignupRepeatPass,
+            onValueChange = { viewModel.etSignupRepeatPass = it },
             label = { Text("Repita Contraseña") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -184,12 +218,23 @@ private fun FormRegister() {
             )
         )
 
-
-
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.repeatPasswordError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { /*onLoginClick()*/ },
+            onClick = {
+                if (viewModel.validateForm()){
+                    viewModel.registerUserAccount()
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1980E6)),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier

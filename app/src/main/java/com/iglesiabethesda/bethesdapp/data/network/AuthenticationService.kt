@@ -61,4 +61,21 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         }
     }
 
+    /*SI HAY UNA SESION ACTIVA VERIFICA
+    * 1. SI LA CUENTA ESTA ACTIVA O CONFRIMADA O VERIFICADA DESDE LA URL QUE MANDA GOOGLE
+    * 2. SI LA CUENTA NO ESTA VERIFICADA
+    * 3. SI NO HAY CUENTA CON SESION INICIADA*/
+    suspend fun getActiveSessionStatus(): LoginResult {
+        val user = firebase.auth.currentUser
+
+        return if (user != null) {
+            // Recargar el estado del usuario (para actualizar isEmailVerified)
+            user.reload().await()
+            LoginResult.Success(user.isEmailVerified)
+        } else {
+            LoginResult.Error
+        }
+    }
+
+
 }

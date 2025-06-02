@@ -7,11 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.Login.domain.SendEmailVerificationUseCase
 import com.iglesiabethesda.bethesdapp.Login.domain.VerifyEmailUseCase
 import com.iglesiabethesda.bethesdapp.util.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+@HiltViewModel
 class VerificationViewModel @Inject constructor(
     val sendEmailVerificationUseCase: SendEmailVerificationUseCase,
     val verifyEmailUseCase: VerifyEmailUseCase
