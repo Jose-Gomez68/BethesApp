@@ -23,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.Login.viewmodel.VerificationViewModel
@@ -42,7 +42,7 @@ fun VerificationScreen(viewModel: VerificationViewModel = viewModel()) {
 
 @Composable
 fun VerificationScreen(navController: NavController,
-                       viewModel: VerificationViewModel = viewModel()) {
+                       viewModel: VerificationViewModel = hiltViewModel()) {
     Screen(navController, viewModel)
 }
 
@@ -55,16 +55,17 @@ private fun Screen(navController: NavController,viewModel: VerificationViewModel
 
     val showContinueEvent = viewModel.showContinueButton.observeAsState()
     val navigateEvent = viewModel.navigateToVerifyAccount.observeAsState()
-//getContentIfNotHandled()
-    LaunchedEffect(navigateEvent.value?.getContentIfNotHandle()) {
-        if (navigateEvent.value?.getContentIfNotHandle() == true) {
+
+    /*PARA CUANDO SE CONFIRME LA CUENTA SE VA AL HOME AUTOMTICAMENTE
+    LaunchedEffect(showContinueEvent.value?.peekContent()) {
+        if (showContinueEvent.value?.peekContent() == true) {
             navController.navigate(Routes.HomeScreen.route) {
-                popUpTo(Routes.HomeScreen.route) {
+                popUpTo(Routes.VerificationScreen.route) {
                     inclusive = true
                 }
             }
         }
-    }
+    }*/
 
     Box(
         modifier = Modifier
@@ -78,7 +79,7 @@ private fun Screen(navController: NavController,viewModel: VerificationViewModel
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Spacer(Modifier.height(20.dp))
-            HeaderView("aaaa")
+            HeaderView(viewModel.getCurrentUserEmail().toString())
             Spacer(Modifier.height(50.dp))
             GifImageLocal(drawableId = R.drawable.reloj_arena,modifier = Modifier.size(110.dp))
 
@@ -86,8 +87,12 @@ private fun Screen(navController: NavController,viewModel: VerificationViewModel
             Spacer(modifier = Modifier.weight(0.1f))
             if (showContinueEvent.value?.getContentIfNotHandle() == true) {
                 Button(
-                    onClick = { /*onLoginClick()*/
-                        Log.e("FUNCIONO", "SE DIO CLICK")
+                    onClick = {
+                        navController.navigate(Routes.HomeScreen.route) {
+                            popUpTo(Routes.VerificationScreen.route) {
+                                inclusive = true
+                            }
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF03A9F4)),
                     shape = RoundedCornerShape(16.dp),
@@ -101,20 +106,6 @@ private fun Screen(navController: NavController,viewModel: VerificationViewModel
             }
                     Spacer(modifier = Modifier.weight(0.1f))
 
-            // Espacio flexible que empuja el botón hacia abajo
-           /* Spacer(modifier = Modifier.weight(0.1f))
-            Button(
-                onClick = { *//*onLoginClick()*//* },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .padding(horizontal = 60.dp)
-            ) {
-                Text("Cancelar", color = Color.White, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.weight(0.1f))*/
         }
     }
 }

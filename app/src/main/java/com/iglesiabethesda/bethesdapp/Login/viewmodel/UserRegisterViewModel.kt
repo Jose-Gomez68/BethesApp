@@ -46,7 +46,7 @@ class UserRegisterViewModel @Inject constructor(
             utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()
         )
 
-        val userSignIn = UserSignIn(memberName,memberName, memberEmail, "68120568",
+        val userSignIn = UserSignIn("",memberName,memberName, memberEmail, "68120568",
             "68120568", 1, utilsFunctions.getCurrentDateTime(),
             utilsFunctions.getCurrentDateTime())
         viewModelScope.launch {

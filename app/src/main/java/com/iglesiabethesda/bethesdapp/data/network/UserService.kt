@@ -1,7 +1,9 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
+import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.data.MembersModelFirebase
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -74,22 +76,25 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
     }.isSuccess
 
     suspend fun getMemberByMemberCode(memberCode: String): MembersModel? = kotlin.runCatching {
-
+        Log.e("AQUI ESTA EL CODIGO", "$memberCode")
         val queryGetMember = firebase
             .db
             .collection(MEMBER_COLLECTION)
-            .whereEqualTo("memberCode", memberCode)
+            .whereEqualTo("membersCode", memberCode)
             .get()
             .await()
 
-        if (!queryGetMember.isEmpty){
+        if (!queryGetMember.isEmpty) {
             val document = queryGetMember.documents[0]
-            document.toObject(MembersModel::class.java)
+            Log.e("AQUI ESTA EL CODIGO", "${document?.data?.get("name")}")
+            document.toObject(MembersModelFirebase::class.java)?.toModel()
         } else {
             null
         }
-
+    }.onFailure {
+        Log.e("FIREBASE_ERROR", "Fallo al obtener miembro: ${it.message}", it)
     }.getOrNull()
+
 
     suspend fun updateMemberEmailByUid(uid: String, newEmail: String): Boolean = runCatching {
         val collection = firebase.db.collection(MEMBER_COLLECTION)
@@ -104,6 +109,42 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             val document = querySnapshot.documents.first()
             // Actualizar solo el campo "email"
             document.reference.update("email", newEmail).await()
+        } else {
+            throw Exception("No se encontró un miembro con el UID: $uid")
+        }
+    }.isSuccess
+
+    suspend fun updateMemberStatusAccountByUid(uid: String, statusAccount: Int): Boolean = runCatching {
+        val collection = firebase.db.collection(MEMBER_COLLECTION)
+
+        // Buscar el documento con el UID especificado
+        val querySnapshot = collection
+            .whereEqualTo("uid", uid)
+            .get()
+            .await()
+
+        if (!querySnapshot.isEmpty) {
+            val document = querySnapshot.documents.first()
+            // Actualizar solo el campo "email"
+            document.reference.update("statusAccount", statusAccount).await()
+        } else {
+            throw Exception("No se encontró un miembro con el UID: $uid")
+        }
+    }.isSuccess
+
+    suspend fun updateUserStatusAccountByUid(uid: String, statusAccount: Int): Boolean = runCatching {
+        val collection = firebase.db.collection(USER_COLLECTION)
+
+        // Buscar el documento con el UID especificado
+        val querySnapshot = collection
+            .whereEqualTo("uid", uid)
+            .get()
+            .await()
+
+        if (!querySnapshot.isEmpty) {
+            val document = querySnapshot.documents.first()
+            // Actualizar solo el campo "email"
+            document.reference.update("statusAccount", statusAccount).await()
         } else {
             throw Exception("No se encontró un miembro con el UID: $uid")
         }
