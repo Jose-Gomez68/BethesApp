@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,14 +38,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.Login.viewmodel.SignUpViewModel
+import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import java.util.Calendar
 
 /**
  * ICONOS GRATIS ANIMADOS https://iconos8.es/icons/set/church-loading--animated*/
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
+fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = hiltViewModel()) {
 
     /**
      * CONDICION PARA CUANDO SE INICIE SESION SABER
@@ -56,12 +59,23 @@ fun SignUpScreen(viewModel: SignUpViewModel = hiltViewModel()) {
      * AHI HAREMOS UN UPDATE A LA USERACCOUNT*/
 
 
-    Screen(viewModel)
+    Screen(navController, viewModel)
 }
 
 //@Preview
 @Composable
-private fun Screen(viewModel: SignUpViewModel) {
+private fun Screen(navController: NavController, viewModel: SignUpViewModel) {
+
+    val isUserCreated = viewModel.isUserCreated
+
+    if (isUserCreated) {
+        LaunchedEffect(Unit) {
+            navController.navigate(Routes.VerificationScreen.route) {
+                popUpTo(Routes.SignUp.route) { inclusive = true } // Opcional: evita volver atrás
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

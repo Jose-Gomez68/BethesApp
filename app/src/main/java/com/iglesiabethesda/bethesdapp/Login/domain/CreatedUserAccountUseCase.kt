@@ -1,5 +1,6 @@
 package com.iglesiabethesda.bethesdapp.Login.domain
 
+import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.CreateUserAccountModel
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService

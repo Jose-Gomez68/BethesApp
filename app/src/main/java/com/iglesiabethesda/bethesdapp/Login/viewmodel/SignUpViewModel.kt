@@ -1,7 +1,6 @@
 package com.iglesiabethesda.bethesdapp.Login.viewmodel
 
 import android.util.Log
-import android.util.Patterns
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,12 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.Login.CreateUserAccountModel
 import com.iglesiabethesda.bethesdapp.Login.domain.CreatedUserAccountUseCase
-import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
-import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
-import com.iglesiabethesda.bethesdapp.data.network.UserService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +27,10 @@ class SignUpViewModel @Inject constructor(
     var passwordError by mutableStateOf<String?>(null)
     var repeatPasswordError by mutableStateOf<String?>(null)
 
+    var isUserCreated by mutableStateOf(false)
+        private set
+
+
     fun registerUserAccount() {
 
         val user = CreateUserAccountModel(
@@ -45,8 +44,10 @@ class SignUpViewModel @Inject constructor(
             val create = createdUserAccountUseCase(user)
             if (create) {
                 Log.e("EXITO SE CREO","CHINGON")
+                isUserCreated = true
             }else{
                 Log.e("ERROOORRRR","NOO LA POLITZIA")
+                isUserCreated = false
             }
         }
 
