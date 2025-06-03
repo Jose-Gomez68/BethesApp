@@ -35,17 +35,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
 @Composable
-fun LoginScreen() {
-    Screen()
+fun LoginScreen(navController: NavController) {
+    Screen(navController)
 }
 
 @Preview
 @Composable
-private fun Screen() {
+private fun Screen(navController: NavController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -64,6 +66,7 @@ private fun Screen() {
             Spacer(Modifier.height(10.dp))
             HeaderView()
             FormLogin(
+                navController,
                 email = email,
                 onEmailChange = { email = it },
                 password = password,
@@ -89,7 +92,7 @@ private fun HeaderView() {
             .background(Color.Transparent),//agrege esto recientemente
     ) {
         Image(
-            painter = painterResource(id = R.mipmap.logo), // usa el nombre real de tu imagen
+            painter = painterResource(id = R.drawable.logo), // usa el nombre real de tu imagen
             contentDescription = "Logo",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
@@ -132,6 +135,7 @@ private fun HeaderView() {
 
 @Composable
 private fun FormLogin(
+    navController: NavController,
     email: String,
     onEmailChange: (String) -> Unit,
     password: String,
@@ -218,7 +222,11 @@ private fun FormLogin(
         Row(
             modifier = Modifier
                 .padding(top = 16.dp)
-                .clickable { /*onClick()*/ },
+                .clickable {
+                    navController.navigate(
+                        Routes.SignUp.route
+                    )
+                },
             horizontalArrangement = Arrangement.Center
         ) {
             Text(text = "New user? ", color = Color(0xFF637588))

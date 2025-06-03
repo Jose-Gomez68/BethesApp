@@ -75,7 +75,8 @@ class MainActivity : ComponentActivity() {
                     val hideBars = currentRoute in listOf(
                         Routes.SplashScreen.route,
                         Routes.LoginScreen.route,
-                        Routes.SignUp.route
+                        Routes.SignUp.route,
+                        Routes.VerificationScreen.route
                     )
 
                     Scaffold(
@@ -181,8 +182,8 @@ fun NavigationGraph(
         modifier = modifier
     ){
         composable(Routes.SplashScreen.route) { AppSplashScreen(navController) }
-        composable(Routes.LoginScreen.route) { LoginScreen() }
-        composable(Routes.SignUp.route) { SignUpScreen() }
+        composable(Routes.LoginScreen.route) { LoginScreen(navController) }
+        composable(Routes.SignUp.route) { SignUpScreen(navController) }
         composable(Routes.VerificationScreen.route) { VerificationScreen(navController) }
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen(navController) }
