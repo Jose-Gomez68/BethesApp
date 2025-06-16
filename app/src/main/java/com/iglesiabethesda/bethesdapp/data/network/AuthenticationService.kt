@@ -85,5 +85,9 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         false
     }
 
+    /*CIERRE DE SESION*/
+    fun logout() {
+        firebase.auth.signOut()
+    }
 
 }
