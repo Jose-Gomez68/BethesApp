@@ -1,5 +1,8 @@
 package com.iglesiabethesda.bethesdapp.Login.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.Login.domain.ResetPasswordUseCase
@@ -16,16 +19,18 @@ class ResetPasswordViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<ResetPasswordUiState>(ResetPasswordUiState.Idle)
     val uiState: StateFlow<ResetPasswordUiState> = _uiState
+    var etResetPassEmail by mutableStateOf("")
+    var tvResetPassEmailError by mutableStateOf<String?>(null)
 
-    fun sendResetPassEmail(email:String) {
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+    fun sendResetPassEmail() {
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etResetPassEmail).matches()) {
             _uiState.value = ResetPasswordUiState.InvalidEmail
             return
         }
 
         viewModelScope.launch {
             _uiState.value = ResetPasswordUiState.Loading
-            val result = resetPasswordUseCase(email)
+            val result = resetPasswordUseCase(etResetPassEmail)
             _uiState.value = if (result) {
                 ResetPasswordUiState.Success
             } else {
@@ -37,6 +42,22 @@ class ResetPasswordViewModel @Inject constructor(
 
     fun resetState() {
         _uiState.value = ResetPasswordUiState.Idle
+    }
+
+    fun validateForm(): Boolean {
+        var isValid = true
+
+        tvResetPassEmailError = null
+
+        if (etResetPassEmail.isBlank()) {
+            tvResetPassEmailError = "El correo no puede estar vacío"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etResetPassEmail).matches()) {
+            tvResetPassEmailError = "Formato de correo inválido"
+            isValid = false
+        }
+
+        return isValid
     }
 
 }

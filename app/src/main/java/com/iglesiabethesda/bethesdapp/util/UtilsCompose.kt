@@ -1,6 +1,9 @@
 package com.iglesiabethesda.bethesdapp.util
 
 import androidx.annotation.DrawableRes
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,5 +26,28 @@ fun GifImageLocal(@DrawableRes drawableId: Int, modifier: Modifier = Modifier) {
         imageLoader = imageLoader,
         contentDescription = "GIF animado local",
         modifier = modifier
+    )
+}
+
+@Composable
+fun SimpleAlertDialog(
+    title: String,
+    message: String,
+    buttonText: String = "Cerrar",
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(text = message)
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = buttonText)
+            }
+        }
     )
 }

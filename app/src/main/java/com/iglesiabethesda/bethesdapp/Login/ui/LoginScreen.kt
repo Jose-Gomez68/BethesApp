@@ -272,7 +272,10 @@ private fun FormLogin(
     Row(
         modifier = Modifier
             .padding(top = 16.dp)
-            .clickable { /*onClick()*/ },
+            .clickable {
+                navController.navigate(
+                Routes.LoginRestPasswordScreen.route
+            ) },
         horizontalArrangement = Arrangement.Center
     ) {
         Text(text = "Forgot Passsword? ", color = Color(0xFF637588))
