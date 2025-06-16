@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,17 +30,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.iglesiabethesda.bethesdapp.Login.viewmodel.ResetPasswordUiState
+import com.iglesiabethesda.bethesdapp.Login.viewmodel.ResetPasswordViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
 @Composable
-fun LoginResPasswordScreen() {
-    Screen()
+fun LoginResPasswordScreen(
+    navController: NavController,
+    viewModel: ResetPasswordViewModel = hiltViewModel()
+    ) {
+    Screen(
+        navController,
+        viewModel
+    )
 }
 
-@Preview
+//@Preview
 @Composable
-private fun Screen() {
+private fun Screen(
+    navController: NavController,
+    viewModel: ResetPasswordViewModel
+) {
 
     Box(
         modifier = Modifier
@@ -51,16 +66,45 @@ private fun Screen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(30.dp))
-            Body()
+            Body(
+                navController,
+                viewModel
+            )
         }
     }
 
 }
 
 @Composable
-private fun Body(){
+private fun Body(
+    navController: NavController,
+    viewModel: ResetPasswordViewModel
+){
 
+    val uiState by viewModel.uiState.collectAsState()
     var email by remember { mutableStateOf("") }
+
+    // Escucha el estado para navegar o mostrar mensajes
+    when (uiState) {
+        is ResetPasswordUiState.Success -> {
+            // Regresamos y reiniciamos el estado para que no lo vuelva a disparar
+            LaunchedEffect(Unit) {
+                viewModel.resetState()
+                navController.popBackStack()
+            }
+        }
+
+        is ResetPasswordUiState.InvalidEmail -> {
+            // Muestra mensaje de error por email inválido
+            LaunchedEffect(Unit) {
+                // Aquí puedes usar un Snackbar o Toast
+                // Toast.makeText(context, "Email no válido", Toast.LENGTH_SHORT).show()
+                viewModel.resetState()
+            }
+        }
+
+        else -> Unit
+    }
 
     Text(
         text = "Ingresa tu correo electronico asociado," +
@@ -103,4 +147,19 @@ private fun Body(){
     ) {
         Text("Enviar Email", color = Color.White, fontWeight = FontWeight.Bold)
     }
+
+    if (uiState is ResetPasswordUiState.Loading) {
+        Spacer(modifier = Modifier.height(24.dp))
+        CircularProgressIndicator()
+    }
+
+    if (uiState is ResetPasswordUiState.Error) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Ocurrió un error al enviar el correo.",
+            color = Color.Red,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+    }
+
 }

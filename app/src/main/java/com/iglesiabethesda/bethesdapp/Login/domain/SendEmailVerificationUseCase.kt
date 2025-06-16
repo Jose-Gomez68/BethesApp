@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
 import javax.inject.Inject
 
-class SendEmailVerificationUseCase @Inject constructor(private val authenticationService: AuthenticationService): ViewModel() {
+class SendEmailVerificationUseCase @Inject constructor(private val authenticationService: AuthenticationService) {
 
     /*ESTE CASO DE USO DEBE TENER SU PROPIO VIEWMODEL
     * Y DEBE IR EN LA PANTALLA DE ESPERA MIENTRAS SE

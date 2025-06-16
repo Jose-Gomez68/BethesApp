@@ -22,7 +22,7 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
     }
 
     suspend fun login(email: String, password: String): LoginResult = runCatching {
-        firebase.auth.createUserWithEmailAndPassword(email, password).await()
+        firebase.auth.signInWithEmailAndPassword(email, password).await()
     }.toLoginResult()
 
     suspend fun createAccount(email: String, password: String, userName: String): AuthResult? {
@@ -75,6 +75,14 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         } else {
             LoginResult.Error
         }
+    }
+
+    /*SEND RESET PASSWORD*/
+    suspend fun sendPasswordResetEmail(email: String): Boolean = runCatching {
+        firebase.auth.sendPasswordResetEmail(email).await()
+        true
+    }.getOrElse {
+        false
     }
 
 
