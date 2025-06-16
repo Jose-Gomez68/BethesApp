@@ -49,7 +49,7 @@ class LoginViewModel @Inject constructor(val loginUseCase: LoginUseCase) : ViewM
 
     /*metodo que valida los campos del correo y contra
     * al iniciar sesion en el login */
-    private fun loginUser(email: String, password: String) {
+    fun loginUser(email: String, password: String) {
         viewModelScope.launch {
             _viewState.value = LoginViewState(isLoading = true)
             when (val result = loginUseCase(email, password)) {
@@ -90,5 +90,9 @@ class LoginViewModel @Inject constructor(val loginUseCase: LoginUseCase) : ViewM
 
     private fun isValidPassword(password: String): Boolean =
         password.length >= MIN_PASSWORD_LENGTH || password.isEmpty()
+
+    fun clearErrorDialog() {
+        _showErrorDialog.value = UserLogin(showErrorDialog = false)
+    }
 
 }
