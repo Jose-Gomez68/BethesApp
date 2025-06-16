@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.iglesiabethesda.bethesdapp.Login.ui.LoginResPasswordScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.SignUpScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.VerificationScreen
@@ -76,7 +77,8 @@ class MainActivity : ComponentActivity() {
                         Routes.SplashScreen.route,
                         Routes.LoginScreen.route,
                         Routes.SignUp.route,
-                        Routes.VerificationScreen.route
+                        Routes.VerificationScreen.route,
+                        Routes.LoginRestPasswordScreen.route
                     )
 
                     Scaffold(
@@ -185,6 +187,7 @@ fun NavigationGraph(
         composable(Routes.LoginScreen.route) { LoginScreen(navController) }
         composable(Routes.SignUp.route) { SignUpScreen(navController) }
         composable(Routes.VerificationScreen.route) { VerificationScreen(navController) }
+        composable(Routes.LoginRestPasswordScreen.route) { LoginResPasswordScreen(navController) }
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen(navController) }
         composable(
