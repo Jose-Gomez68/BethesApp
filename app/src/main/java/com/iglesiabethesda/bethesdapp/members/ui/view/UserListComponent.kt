@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 
 @Composable
 fun UsersList() {
@@ -77,7 +78,8 @@ private fun UserItem(user: String) {
             )
 
     ) {
-        UserImage(imageUser = 1)
+        //UserImage(imageUser = 1)// no se usa imagen ya que no se pagara el Storage
+        InitialsAvatar(fullName = "Jose Gomez")
         UserDescrip(user)
     }
 

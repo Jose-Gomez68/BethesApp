@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 
 @Composable
 fun MeScreen() {
@@ -102,14 +103,16 @@ private fun PerfilName () {
                 .padding(8.dp)
 
         ){
-            Image(
+            /*Image(
                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                 contentDescription = "Imagen del Usuario",
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
-            )
+            )*/ //no se usara imagen ya que no se pagara Storage
+
+            InitialsAvatar(fullName = "Jose Gomez", modifier = Modifier.size(100.dp))
 
             Column(
                 modifier = Modifier
