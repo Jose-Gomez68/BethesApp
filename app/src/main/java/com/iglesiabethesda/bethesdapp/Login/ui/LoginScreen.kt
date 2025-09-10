@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -36,7 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -146,18 +150,20 @@ private fun HeaderView() {
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .padding(horizontal = 16.dp)//agrege esto recientemente
-            .background(Color.Transparent),//agrege esto recientemente
+            .padding(horizontal = 16.dp)  // Padding fuera del clip
+            .clip(RoundedCornerShape(18.dp))  // Clip en el Box para todo el contenido
+            .background(Color.White)  // Fondo blanco para evitar transparencias raras
+
     ) {
         Image(
-            painter = painterResource(id = R.drawable.logo), // usa el nombre real de tu imagen
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-                .align(Alignment.TopCenter)
-                .clip(RoundedCornerShape(16.dp))//agrege esto recientemente
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(18.dp))  // Clip también en la imagen para seguridad
         )
+
         Box(
             modifier = Modifier
                 .matchParentSize()
@@ -171,27 +177,20 @@ private fun HeaderView() {
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.offset(y = (-60).dp)
+            ) {
                 Text(
                     text = "Welcome back",
                     color = Color.White,
                     fontSize = 32.sp,
                     fontWeight = FontWeight.Black
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "We're glad to see you again. Sign in with your email and password.",
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    lineHeight = 20.sp
-                )
+
             }
         }
     }
 }
-
 @Composable
 private fun FormLogin(
     navController: NavController,
@@ -202,6 +201,9 @@ private fun FormLogin(
     onLoginClick: () -> Unit,
     viewState: LoginViewState
 ){
+
+    var passwordVisible by remember { mutableStateOf(false) }
+
     Spacer(modifier = Modifier.height(24.dp))
 
     // Campo de correo electrónico
@@ -245,7 +247,21 @@ private fun FormLogin(
             .padding(horizontal = 16.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        visualTransformation = PasswordVisualTransformation(),
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            val image = if (passwordVisible)
+                R.drawable.eye_solid
+            else
+                R.drawable.eye_slash_solid
+
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(
+                    painter = painterResource(id = image),
+                    contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        },
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color(0xFFF0F2F4),
             unfocusedContainerColor = Color(0xFFF0F2F4),

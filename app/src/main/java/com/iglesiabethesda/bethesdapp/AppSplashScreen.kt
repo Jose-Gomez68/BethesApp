@@ -1,15 +1,24 @@
 package com.iglesiabethesda.bethesdapp
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
@@ -26,7 +35,7 @@ fun AppSplashScreen(navController: NavController, viewModel: AppSplashScreenView
     val sessionStatus by viewModel.sessionStatus
 
     LaunchedEffect(sessionStatus) {
-        delay(1000) // opcional: para mostrar un logo o algo por 1 seg
+        delay(2000) // opcional: para mostrar un logo o algo por 1 seg
 
         when (sessionStatus) {
             is LoginResult.Success -> {
@@ -75,7 +84,27 @@ fun AppSplashScreen(navController: NavController, viewModel: AppSplashScreenView
     }*/
 
     // Puedes mostrar un logo aquí o solo un fondo blanco
-    Box(modifier = Modifier.fillMaxSize().background(Color.White))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center  // Centra el contenido del Box
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logo),
+            contentDescription = "Logo de la app",
+            modifier = Modifier
+                .fillMaxWidth(0.6f)   // Ocupa 40% del ancho disponible
+                .aspectRatio(1f)      // Mantiene proporción cuadrada para que sea círculo perfecto
+                .clip(CircleShape)    // Redondea la imagen para que sea círculo
+                .border(
+                    width = 3.dp,
+                    color = Color.Gray,
+                    shape = CircleShape
+                )
+        )
+    }
+
 }
 
 /**
