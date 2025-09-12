@@ -1,5 +1,6 @@
 package com.iglesiabethesda.bethesdapp.Login.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,13 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -31,24 +36,29 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.Login.viewmodel.LoginViewModel
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 
 @Composable
 fun LoginScreen(
@@ -68,15 +78,30 @@ private fun Screen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val showErrorDialog by viewModel.showErrorDialog.observeAsState()
+    val showNetworkErrorDialog by viewModel.showErrorNetworkDialog.observeAsState(false)
 
     val navigateToHome by viewModel.navigateToDetails.observeAsState()
     val navigateToVerifyAccount by viewModel.navigateToVerifyAccount.observeAsState()
     val viewState by viewModel.viewState.collectAsState()
+    val getUser by viewModel.getUserModel.observeAsState()
+    val getMember by viewModel.getMemberModel.observeAsState()
+    val context = LocalContext.current
+    val shaeredPrf = SharedPreferencesConfig(context)
 
     // Navegaciones
     LaunchedEffect(navigateToHome) {
-        navigateToHome?.getContentIfNotHandle()?.let {
-            navController.navigate(Routes.HomeScreen.route)
+        if (navigateToHome?.getContentIfNotHandle() == true) {
+            snapshotFlow { Pair(getUser, getMember) }
+                .collect { (user, member) ->
+                    if (user != null && member != null) {
+                        shaeredPrf.saveUserUid(user.uid)
+                        shaeredPrf.saveUserName(user.nickName)
+                        shaeredPrf.saveMemberUid(member.uid!!)
+                        shaeredPrf.saveMemberName(member.name!!)
+                        shaeredPrf.saveEmail(user.email)
+                        navController.navigate(Routes.HomeScreen.route)
+                    }
+                }
         }
     }
 
@@ -85,9 +110,6 @@ private fun Screen(
             navController.navigate(Routes.VerificationScreen.route)
         }
     }
-
-
-
 
     Box(
         modifier = Modifier
@@ -140,6 +162,26 @@ private fun Screen(
                 }
             }
         )
+    }
+
+    if (showNetworkErrorDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                // Ocultar diálogo al cerrarlo
+                viewModel.clearNetworkErrorDialog()
+            },
+            title = { Text("Error") },
+            text = { Text("Verifique la conexción a internet") },
+            confirmButton = {
+                Button(onClick = { viewModel.clearNetworkErrorDialog() }) {
+                    Text("Aceptar")
+                }
+            }
+        )
+    }
+
+    if (viewState.isLoading) {
+        LoginLoadingDialog()
     }
 
 }
@@ -340,4 +382,41 @@ private fun FormLogin(
 
     }
 
+}
+
+@Composable
+fun LoginLoadingDialog() {
+    Dialog(
+        onDismissRequest = {}, // No permite que el usuario lo cierre manualmente
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            tonalElevation = 8.dp,
+            color = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .width(300.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator(
+                    color = Color.Red,
+                    strokeWidth = 4.dp
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Iniciando sesión...", style = typography.bodyMedium)
+            }
+        }
+    }
 }

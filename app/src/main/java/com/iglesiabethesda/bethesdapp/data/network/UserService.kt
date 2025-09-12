@@ -1,6 +1,8 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
 import android.util.Log
+import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
+import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModelFirebase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.members.data.MembersModel
 import com.iglesiabethesda.bethesdapp.members.data.MembersModelFirebase
@@ -25,8 +27,8 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "uid" to uid,
             "uidMember" to userSignIn.uidMember,
             "email" to userSignIn.email,
-            "nickname" to userSignIn.nickName,
-            "realname" to userSignIn.realName,
+            "nickName" to userSignIn.nickName,
+            "realName" to userSignIn.realName,
             "statusAccount" to userSignIn.statusAccount,
             "createdDate" to userSignIn.createdDate,
             "updateDate" to userSignIn.updateDate
@@ -61,7 +63,7 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "apPaterno" to membersModel.apPaterno,
             "apMaterno" to membersModel.apMaterno,
             "hobby" to membersModel.hobby,
-            "jop" to membersModel.job,
+            "job" to membersModel.job,
             "tel" to membersModel.tel,
             "emergencyContact" to membersModel.emergencyContact,
             "email" to membersModel.email,
@@ -149,5 +151,43 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             throw Exception("No se encontró un miembro con el UID: $uid")
         }
     }.isSuccess
+
+    suspend fun getMemberByEmail(email: String): MembersModel? = runCatching {
+        val query = firebase
+            .db
+            .collection(MEMBER_COLLECTION)
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+
+        if (!query.isEmpty) {
+            val document = query.documents[0]
+            document.toObject(MembersModelFirebase::class.java)?.toModel()
+        } else {
+            null
+        }
+    }.onFailure {
+        Log.e("FIREBASE_ERROR", "Fallo al obtener miembro por email: ${it.message}", it)
+    }.getOrNull()
+
+
+    suspend fun getUserByEmail(email: String): UserModel? = runCatching {
+        val query = firebase
+            .db
+            .collection(USER_COLLECTION)
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+
+        if (!query.isEmpty) {
+            val document = query.documents[0]
+            document.toObject(UserModelFirebase::class.java)?.toModel()
+        } else {
+            null
+        }
+    }.onFailure {
+        Log.e("FIREBASE_ERROR", "Fallo al obtener usuario por email: ${it.message}", it)
+    }.getOrNull()
+
 
 }

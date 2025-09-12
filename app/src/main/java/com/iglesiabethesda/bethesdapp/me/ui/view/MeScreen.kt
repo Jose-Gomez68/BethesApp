@@ -1,10 +1,13 @@
 package com.iglesiabethesda.bethesdapp.me.ui.view
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,39 +15,148 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.LogoutState
+import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.MeScreenViewModel
+import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 
 @Composable
-fun MeScreen() {
-    Screen()
+fun MeScreen(viewModel: MeScreenViewModel = hiltViewModel(),
+    navController: NavController) {
+    Screen(viewModel, navController)
 }
 
 @Preview
 @Composable
-fun Screen() {
+fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
+
+    val logoutState by viewModel.logoutState.collectAsState()
+    val context = LocalContext.current
+
+    when(logoutState) {
+        is LogoutState.Loading -> {
+            //mostrar dialog de carga
+            Log.e("CARGANDO","")
+            LogoutLoadingDialog()
+        }
+
+        is LogoutState.Success -> {
+            // Limpiar el onLogut
+            LaunchedEffect(Unit) {
+                navController.navigate(Routes.LoginScreen.route) {
+                    popUpTo(0) // Limpia todo el historial de navegación
+                    launchSingleTop = true
+                }
+            }
+        }
+
+        is LogoutState.Error -> {
+            val message = (logoutState as LogoutState.Error).message
+            LaunchedEffect(message) {
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+        }
+
+        LogoutState.Idle -> {
+            // No hacer nada
+        }
+
+    }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColorApp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        item {
+            PerfilName()
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = { /* Acción al presionar el botón */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(horizontal = 30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Gray.copy(alpha = 0.2f),
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Editar",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Details()
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+
+        // Aquí agregamos la lista como múltiples elementos
+        items(11) { index ->
+            ChurchActivity("Carlos García - M, 35") // Aquí puedes adaptar
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = {
+                    viewModel.logout()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(horizontal = 30.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red.copy(alpha = 0.2f),
+                    contentColor = Color.Black
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Cerrar Sesión",
+                    style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
+            }
+            Spacer(modifier = Modifier.height(40.dp)) // espacio al final
+        }
+    }
+}
+
+/*
+* fun Screen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,8 +198,7 @@ fun Screen() {
 
         }
     }
-}
-
+}*/
 
 @Composable
 private fun PerfilName () {
@@ -282,7 +393,71 @@ private fun Details() {
 }
 
 @Composable
-private fun ChurchActivity() {
+fun LogoutLoadingDialog() {
+    Dialog(
+        onDismissRequest = {}, // No permite que el usuario lo cierre manualmente
+        properties = DialogProperties(
+            dismissOnBackPress = false,
+            dismissOnClickOutside = false
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            tonalElevation = 8.dp,
+            color = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(24.dp)
+                    .width(300.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier.size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator(
+                    color = Color.Red,
+                    strokeWidth = 4.dp
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Cerrando sesión...", style = typography.bodyMedium)
+            }
+        }
+    }
+}
+
+
+
+@Composable
+private fun ChurchActivity(text: String) {
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 10.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "Community Group",
+            style = typography.bodyLarge,
+            color = Color.Black,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = "Every Thursday 7:00PM",
+            style = typography.bodySmall.copy(fontSize = 12.sp),
+            color = Color.Gray
+        )
+    }
+
+}
+
+/*
+* private fun ChurchActivity() {
 
     Column(
         modifier = Modifier
@@ -369,3 +544,4 @@ private fun ChurchActivity() {
     }
 
 }
+* */

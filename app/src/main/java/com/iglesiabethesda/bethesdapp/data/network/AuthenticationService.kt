@@ -1,5 +1,6 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
+import com.google.firebase.FirebaseNetworkException
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
 import kotlinx.coroutines.delay
 import com.google.firebase.auth.AuthResult
@@ -21,9 +22,25 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         }
     }
 
+    /* ANTERIOR FUNCION SOLO MANEJA ERROR DE LOGIN
     suspend fun login(email: String, password: String): LoginResult = runCatching {
         firebase.auth.signInWithEmailAndPassword(email, password).await()
-    }.toLoginResult()
+    }.toLoginResult()*/
+
+    suspend fun login(email: String, password: String): LoginResult = try {
+        val result = firebase.auth.signInWithEmailAndPassword(email, password).await()
+        val user = result.user
+        if (user != null) {
+            LoginResult.Success(user.isEmailVerified)
+        } else {
+            LoginResult.Error
+        }
+    } catch (e: FirebaseNetworkException) {
+        LoginResult.NetworkError
+    } catch (e: Exception) {
+        LoginResult.Error
+    }
+
 
     suspend fun createAccount(email: String, password: String, userName: String): AuthResult? {
         // Crear usuario
@@ -65,6 +82,23 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
     * 1. SI LA CUENTA ESTA ACTIVA O CONFRIMADA O VERIFICADA DESDE LA URL QUE MANDA GOOGLE
     * 2. SI LA CUENTA NO ESTA VERIFICADA
     * 3. SI NO HAY CUENTA CON SESION INICIADA*/
+    suspend fun getActiveSessionStatus(): LoginResult = runCatching {
+        val user = firebase.auth.currentUser
+        if (user != null) {
+            user.reload().await() // aquí puede fallar si no hay internet
+            LoginResult.Success(user.isEmailVerified)
+        } else {
+            LoginResult.Error
+        }
+    }.getOrElse { throwable ->
+        if (throwable is FirebaseNetworkException) {
+            LoginResult.NetworkError
+        } else {
+            LoginResult.Error
+        }
+    }
+
+    /*ahora verifica la conxicon a intenrt
     suspend fun getActiveSessionStatus(): LoginResult {
         val user = firebase.auth.currentUser
 
@@ -75,7 +109,7 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         } else {
             LoginResult.Error
         }
-    }
+    }*/
 
     /*SEND RESET PASSWORD*/
     suspend fun sendPasswordResetEmail(email: String): Boolean = runCatching {
@@ -89,5 +123,27 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
     fun logout() {
         firebase.auth.signOut()
     }
+
+    /**
+     * Devuelve el UID del usuario actualmente logueado
+     */
+    fun getCurrentUserUid(): String? {
+        return firebase.auth.currentUser?.uid
+    }
+
+    /**
+     * Devuelve el email del usuario actualmente logueado
+     */
+    fun getCurrentUserEmail(): String? {
+        return firebase.auth.currentUser?.email
+    }
+
+    /**
+     * Devuelve el nombre de usuario (displayName) del usuario logueado
+     */
+    fun getCurrentUserName(): String? {
+        return firebase.auth.currentUser?.displayName
+    }
+
 
 }

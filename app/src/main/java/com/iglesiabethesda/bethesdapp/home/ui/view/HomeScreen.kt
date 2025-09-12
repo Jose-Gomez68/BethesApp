@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 
 @Composable
 fun HomeScreen() {
@@ -22,6 +24,10 @@ fun HomeScreen() {
 @Preview
 @Composable
 fun Screen() {
+
+    val context = LocalContext.current
+    val shaeredPrf = SharedPreferencesConfig(context)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +40,7 @@ fun Screen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Text(text = "Pantalla Inicio", fontSize = 20.sp, color = Color.Black)
+            Text(text = "Pantalla Inicio "+shaeredPrf.getUserName(), fontSize = 20.sp, color = Color.Black)
         }
     }
 }

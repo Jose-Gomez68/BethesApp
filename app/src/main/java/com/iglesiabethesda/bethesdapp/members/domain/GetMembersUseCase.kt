@@ -12,7 +12,7 @@ class GetMembersUseCase  @Inject constructor(
 ){
 
     suspend operator fun invoke(memberCode: String): MembersModel? {
-        val member = userService.getMemberByMemberCode(memberCode)
+        val member: MembersModel? = userService.getMemberByMemberCode(memberCode)
 
             return member ?: MembersModel(
                 "",

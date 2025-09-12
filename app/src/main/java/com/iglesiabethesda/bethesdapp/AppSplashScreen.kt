@@ -59,6 +59,13 @@ fun AppSplashScreen(navController: NavController, viewModel: AppSplashScreenView
                     popUpTo(Routes.SplashScreen.route) { inclusive = true }
                 }
             }
+
+            is LoginResult.NetworkError -> {
+                navController.navigate(Routes.LoginScreen.route) {
+                    popUpTo(Routes.SplashScreen.route) { inclusive = true }
+                }
+            }
+
             null -> { /* Loading... */ }
         }
 
