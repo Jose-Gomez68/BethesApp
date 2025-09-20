@@ -1,6 +1,7 @@
 package com.iglesiabethesda.bethesdapp.util
 
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -30,5 +31,62 @@ class UtilsFunctions {
         return "$namePart$apPart$dateStr"
     }
 
+    fun parseDateFlexible(dateString: String): Date? {
+        if (dateString.isBlank()) return null
+
+        val patterns = listOf(
+            "dd/MM/yyyy",                          // lo que guardas con DatePicker
+            "EEE MMM dd HH:mm:ss zzz yyyy"         // lo que ves en Firebase (Date.toString)
+        )
+
+        for (pattern in patterns) {
+            try {
+                val locale = if (pattern.contains("EEE") || pattern.contains("MMM")) {
+                    Locale.ENGLISH  // para leer lo que Firebase guarda (en inglés)
+                } else {
+                    Locale("es", "MX") // para leer entradas en español (si las hubiera)
+                }
+                val sdf = SimpleDateFormat(pattern, locale)
+                val parsed = sdf.parse(dateString)
+                if (parsed != null) return parsed
+            } catch (_: Exception) {
+                // seguimos con el siguiente patrón
+            }
+        }
+        return null
+    }
+
+    fun ageCalculated(birthDay: Date): Int {
+        val nacimiento = Calendar.getInstance().apply {
+            time = birthDay
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        val hoy = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        var edad = hoy.get(Calendar.YEAR) - nacimiento.get(Calendar.YEAR)
+
+        // Si todavía no cumple años este año
+        if (hoy.get(Calendar.MONTH) < nacimiento.get(Calendar.MONTH) ||
+            (hoy.get(Calendar.MONTH) == nacimiento.get(Calendar.MONTH) &&
+                    hoy.get(Calendar.DAY_OF_MONTH) < nacimiento.get(Calendar.DAY_OF_MONTH))) {
+            edad--
+        }
+
+        return if (edad >= 0) edad else 0
+    }
+
+    fun formatDateInSpanish(date: Date): String {
+        val sdf = SimpleDateFormat("dd 'de' MMMM 'de' yyyy", Locale("es", "MX"))
+        return sdf.format(date)
+    }
 
 }

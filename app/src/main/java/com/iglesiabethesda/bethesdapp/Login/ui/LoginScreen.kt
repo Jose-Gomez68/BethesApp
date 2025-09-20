@@ -86,7 +86,7 @@ private fun Screen(
     val getUser by viewModel.getUserModel.observeAsState()
     val getMember by viewModel.getMemberModel.observeAsState()
     val context = LocalContext.current
-    val shaeredPrf = SharedPreferencesConfig(context)
+    val sharedPrf = SharedPreferencesConfig(context)
 
     // Navegaciones
     LaunchedEffect(navigateToHome) {
@@ -94,11 +94,17 @@ private fun Screen(
             snapshotFlow { Pair(getUser, getMember) }
                 .collect { (user, member) ->
                     if (user != null && member != null) {
-                        shaeredPrf.saveUserUid(user.uid)
-                        shaeredPrf.saveUserName(user.nickName)
-                        shaeredPrf.saveMemberUid(member.uid!!)
-                        shaeredPrf.saveMemberName(member.name!!)
-                        shaeredPrf.saveEmail(user.email)
+                        sharedPrf.saveUserUid(user.uid)
+                        sharedPrf.saveUserName(user.nickName)
+                        sharedPrf.saveMemberUid(member.uid)
+                        sharedPrf.saveMemberName("${member.name} ${member.apPaterno} ${member.apMaterno}")
+                        sharedPrf.saveEmail(user.email)
+                        sharedPrf.saveBirthDay(member.birthDay.toString())
+                        sharedPrf.saveHobby(member.hobby)
+                        sharedPrf.saveJob(member.job)
+                        Log.e("AQUIII", member.job)
+                        Log.e("AQUIII", member.hobby)
+                        Log.e("AQUIII", member.birthDay.toString())
                         navController.navigate(Routes.HomeScreen.route)
                     }
                 }

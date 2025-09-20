@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,11 +43,13 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.me.ui.model.UserUiStateModel
 import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.LogoutState
 import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.MeScreenViewModel
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
+import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 
 @Composable
 fun MeScreen(viewModel: MeScreenViewModel = hiltViewModel(),
@@ -56,12 +57,16 @@ fun MeScreen(viewModel: MeScreenViewModel = hiltViewModel(),
     Screen(viewModel, navController)
 }
 
-@Preview
+
 @Composable
 fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
 
     val logoutState by viewModel.logoutState.collectAsState()
     val context = LocalContext.current
+    val userDataUiState by viewModel.uiState.collectAsState()
+    /*val userName by viewModel.userName.collectAsState()
+    val name by viewModel.name.collectAsState()
+    val email by viewModel.userEmail.collectAsState()*/
 
     when(logoutState) {
         is LogoutState.Loading -> {
@@ -75,6 +80,7 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
             LaunchedEffect(Unit) {
                 navController.navigate(Routes.LoginScreen.route) {
                     popUpTo(0) // Limpia todo el historial de navegación
+                    viewModel.clearPreferences()
                     launchSingleTop = true
                 }
             }
@@ -100,7 +106,7 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            PerfilName()
+            PerfilName(userDataUiState)
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = { /* Acción al presionar el botón */ },
@@ -120,7 +126,7 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Details()
+            Details(userDataUiState)
             Spacer(modifier = Modifier.height(20.dp))
         }
 
@@ -199,9 +205,9 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
         }
     }
 }*/
-
+@Preview
 @Composable
-private fun PerfilName () {
+private fun PerfilName(userDataUiState: UserUiStateModel) {
     Column(
         modifier = Modifier
             .padding(8.dp),
@@ -223,7 +229,7 @@ private fun PerfilName () {
                     .background(MaterialTheme.colorScheme.primary)
             )*/ //no se usara imagen ya que no se pagara Storage
 
-            InitialsAvatar(fullName = "Jose Gomez", modifier = Modifier.size(100.dp))
+            InitialsAvatar(fullName = userDataUiState.name, modifier = Modifier.size(100.dp))
 
             Column(
                 modifier = Modifier
@@ -232,7 +238,7 @@ private fun PerfilName () {
 
                 ) {
                 Text(
-                    text = "Nombre del Usuario",
+                    text = userDataUiState.userName,
                     style = typography.bodyLarge,
                     color = Color.Black,
                     fontSize = 18.sp,
@@ -240,13 +246,15 @@ private fun PerfilName () {
                 )
 
                 Text(
-                    text = "Sexo: M, Edad: 25",
+                    text = "Sexo: M, Edad: ${UtilsFunctions().parseDateFlexible(userDataUiState.birthDay)
+                        ?.let { UtilsFunctions().ageCalculated(it) }}",
                     style = typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
                     color = Color.Gray
                 )
 
                 Text(
-                    text = "Fecha de Nacimiento: 06-noviembre-1996",
+                    text = "Fecha de Nacimiento: ${UtilsFunctions().parseDateFlexible(userDataUiState.birthDay)
+                        ?.let { UtilsFunctions().formatDateInSpanish(it) }}",
                     style = typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
                     color = Color.Gray
                 )
@@ -257,7 +265,7 @@ private fun PerfilName () {
 }
 
 @Composable
-private fun Details() {
+private fun Details(userDataUiState: UserUiStateModel) {
 
     Column(
         modifier = Modifier
@@ -301,7 +309,7 @@ private fun Details() {
 
                 ) {
                 Text(
-                    text = "Nombre del Usuario",
+                    text = userDataUiState.name,
                     style = typography.bodySmall,
                     color = Color.Black,
                     fontSize = 18.sp,
@@ -339,7 +347,7 @@ private fun Details() {
 
                 ) {
                 Text(
-                    text = "Pasatiempo favorito es Armar rompecabezas",
+                    text = "Pasatiempo: ${userDataUiState.hobby}",
                     style = typography.bodySmall,
                     color = Color.Black,
                     fontSize = 18.sp,
@@ -377,7 +385,7 @@ private fun Details() {
 
                 ) {
                 Text(
-                    text = "Trabajo en Desarrollando Software",
+                    text = "Trabajo: ${userDataUiState.job}",
                     style = typography.bodySmall,
                     color = Color.Black,
                     fontSize = 18.sp,
