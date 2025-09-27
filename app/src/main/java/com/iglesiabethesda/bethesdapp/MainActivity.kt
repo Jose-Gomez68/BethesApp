@@ -6,28 +6,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,6 +37,7 @@ import com.iglesiabethesda.bethesdapp.Login.ui.LoginScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.SignUpScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.VerificationScreen
 import com.iglesiabethesda.bethesdapp.events.ui.view.EventScreen
+import com.iglesiabethesda.bethesdapp.events.ui.view.NewEventScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
 import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
@@ -58,22 +57,20 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             BethestaAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Greeting("Android")
                     val navigationController = rememberNavController()
                     val navBackStackEntry by navigationController.currentBackStackEntryAsState()
                     val currentRoute = navBackStackEntry?.destination?.route ?: ""
-                    // Ocultar barras en estas rutas
-                    val hideBars = currentRoute in listOf(
+
+                    // Rutas donde ocultas TODO (login, splash, etc.)
+                    val hideAllBars = currentRoute in listOf(
                         Routes.SplashScreen.route,
                         Routes.LoginScreen.route,
                         Routes.SignUp.route,
@@ -81,21 +78,28 @@ class MainActivity : ComponentActivity() {
                         Routes.LoginRestPasswordScreen.route
                     )
 
+                    // Subrutas donde ocultas solo el bottom bar (pero mantienes top con back)
+                    val hideBottomBar = currentRoute in listOf(
+                        Routes.MembersScreen.MembersRegisterScreen.route,
+                        Routes.GroupsScreen.GroupRegisterScreen.route,
+                        Routes.EventsScreen.NewEventScreen.route
+                    )
+
                     Scaffold(
                         topBar = {
-                            if (!hideBars) {
-                                Toolbar(currentRoute)
+                            if (!hideAllBars) {
+                                Toolbar(currentRoute = currentRoute, navController = navigationController)
                             }
                         },
                         bottomBar = {
-                            if (!hideBars) {
+                            if (!hideAllBars && !hideBottomBar) {
                                 MenuBottonNavigation(navController = navigationController)
                             }
                         }
-                    ) {
+                    ) { innerPadding -> // ← aquí está el content (PaddingValues)
                         NavigationGraph(
                             navController = navigationController,
-                            modifier = Modifier.padding(it)
+                            modifier = Modifier.padding(innerPadding)
                         )
                     }
 
@@ -107,8 +111,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Toolbar(currentRoute: String) {
-
+fun Toolbar(currentRoute: String, navController: NavController) {
     val screenTitles = mapOf(
         Routes.HomeScreen.route to "Inicio",
         Routes.MembersScreen.route to "Miembros",
@@ -116,29 +119,41 @@ fun Toolbar(currentRoute: String) {
         Routes.GroupsScreen.route to "Grupos",
         Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.EventsScreen.route to "Eventos",
+        Routes.EventsScreen.NewEventScreen.route to "Nuevo Evento",
         Routes.MeScreen.route to "Perfil"
     )
 
     val title = screenTitles[currentRoute] ?: "App"
 
-    TopAppBar(
+    val showBackButton = currentRoute in listOf(
+        Routes.MembersScreen.MembersRegisterScreen.route,
+        Routes.GroupsScreen.GroupRegisterScreen.route,
+        Routes.EventsScreen.NewEventScreen.route
+    )
+
+    CenterAlignedTopAppBar(
         title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = title,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = Modifier.weight(1.2f))
+            Text(
+                text = title,
+                color = Color.Black
+            )
+        },
+        navigationIcon = {
+            if (showBackButton) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Volver"
+                    )
+                }
             }
         },
-        Modifier.background(backgroundColorApp)
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = backgroundColorApp
+        )
     )
 }
+
 
 @Composable
 fun MenuBottonNavigation(navController: NavController) {
@@ -201,7 +216,8 @@ fun NavigationGraph(
         ) {
             GroupRegisterScreen()
         }
-        composable(Routes.EventsScreen.route) { EventScreen() }
+        composable(Routes.EventsScreen.route) { EventScreen(navController = navController) }
+        composable(Routes.EventsScreen.NewEventScreen.route) { NewEventScreen() }
         composable(Routes.MeScreen.route) { MeScreen(navController = navController) }
     }
 

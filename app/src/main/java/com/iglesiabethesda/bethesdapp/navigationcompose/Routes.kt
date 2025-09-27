@@ -12,7 +12,9 @@ sealed class Routes (val title: String, val icon: Int, val route: String) {
     object MembersScreen: Routes( "usuarios", R.drawable.ic_users, "usuarios" ) {
         object MembersRegisterScreen: Routes( "RegisterUser", R.drawable.ic_users, "RegistrarUsuario" )
     }
-    object EventsScreen: Routes( "eventos", R.drawable.ic_events, "eventos" )
+    object EventsScreen: Routes( "eventos", R.drawable.ic_events, "eventos" ){
+        object NewEventScreen: Routes("Nuevo Evento", R.drawable.ic_events, "NewEvent")
+    }
     object GroupsScreen: Routes( "grupos", R.drawable.ic_groups, "grupos" ){
         // Subrutas específicas del módulo de grupos
         object GroupRegisterScreen : Routes("Nuevo Grupo", R.drawable.ic_groups, "nuevoGrupo")

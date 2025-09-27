@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">BethestaApp</string>
+
+    <!--NEW EVENT SCREEN-->
+    <string name="tv_title_new_event">Titulo</string>
+    <string name="tv_subtitle_descrip_new_event">Descripción</string>
+    <string name="txt_field_descrip_new_event">Descripción del Evento</string>
+    <string name="tv_title_priority_new_event">Prioridad</string>
+    <string name="btn_title_save_new_event">Crear Evento</string>
+
 </resources>

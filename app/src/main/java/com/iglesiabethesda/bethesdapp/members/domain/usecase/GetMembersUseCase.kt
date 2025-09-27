@@ -1,4 +1,4 @@
-package com.iglesiabethesda.bethesdapp.members.domain
+package com.iglesiabethesda.bethesdapp.members.domain.usecase
 
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
 import com.iglesiabethesda.bethesdapp.data.network.UserService

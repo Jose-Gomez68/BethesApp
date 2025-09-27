@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +43,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -51,19 +55,20 @@ import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventScreen() {
-    Screen()
+fun EventScreen(navController: NavHostController) {
+    Screen(navController)
 }
 
+@Preview(showBackground = true)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Screen() {
+fun Screen(navController: NavHostController) {
 
     //Harcode de eventos
     val events = listOf(
-        CalendarEvent(LocalDate.of(2025, 4, 5), "Reunión urgente", "Con el equipo de ventas", 1),
-        CalendarEvent(LocalDate.of(2025, 4, 10), "Entrega del informe", "Informe de análisis de datos", 2),
-        CalendarEvent(LocalDate.of(2025, 4, 15), "Taller interno", "Tema: productividad", 3),
+        CalendarEvent(LocalDate.of(2025, 9, 22), "Reunión urgente", "Con el equipo de ventas", 1),
+        CalendarEvent(LocalDate.of(2025, 9, 10), "Entrega del informe", "Informe de análisis de datos", 2),
+        CalendarEvent(LocalDate.of(2025, 9, 15), "Taller interno", "Tema: productividad", 3),
         CalendarEvent(LocalDate.of(2025, 4, 20), "Taller interno", "Tema: productividadaa", 3),
         CalendarEvent(LocalDate.of(2025, 4, 15), "Taller interno", "Tema: productividad2", 1),
         CalendarEvent(LocalDate.of(2025, 4, 20), "Taller interno", "Tema: productividad3", 2),
@@ -82,6 +87,17 @@ fun Screen() {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             SimpleCalendarScreen(events)
+        }
+
+        FloatingActionButton(
+            onClick = { navController.navigate("NewEvent") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            shape = CircleShape,
+            containerColor = MaterialTheme.colorScheme.primary
+        ) {
+            Icon(Icons.Filled.Add, contentDescription = "Agregar")
         }
     }
 }
