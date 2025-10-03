@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.kapt")
     id("dagger.hilt.android.plugin")
 }
@@ -76,6 +77,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     //firebase auth
     implementation("com.google.firebase:firebase-auth-ktx")
+    // Add the dependencies for the Crashlytics NDK and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-crashlytics-ndk")
     //DaggerHilt
     implementation("com.google.dagger:hilt-android:$daggerHilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$daggerHilt_version")
