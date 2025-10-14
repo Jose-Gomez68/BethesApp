@@ -119,7 +119,7 @@ private fun Body(
             title = "Reseteo de Contraseña",
             message = "Si el correo está registrado, " +
                     "recibirás un email para restablecer tu contraseña.",
-            buttonText = "Cerrar"
+            buttonNegativeText = "Cerrar"
         ) {
             showDialog = false
             navController.popBackStack()
