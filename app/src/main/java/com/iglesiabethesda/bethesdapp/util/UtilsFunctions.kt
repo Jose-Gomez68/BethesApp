@@ -16,6 +16,15 @@ class UtilsFunctions {
         }
     }
 
+    fun parseDateFromString(dateString: String, pattern: String = "dd/MM/yyyy"): Date {
+        return try {
+            val dateFormat = SimpleDateFormat(pattern, Locale.getDefault())
+            dateFormat.parse(dateString) ?: Date()
+        } catch (e: Exception) {
+            Date() // Valor por defecto en caso de error
+        }
+    }
+
     fun getCurrentDateTime(): Date {
         val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         return format.parse(format.format(Date())) ?: Date()

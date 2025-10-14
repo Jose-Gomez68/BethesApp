@@ -3,9 +3,14 @@ package com.iglesiabethesda.bethesdapp.util
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -18,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
@@ -75,7 +82,7 @@ fun InitialsAvatar(
 fun SimpleAlertDialog(
     title: String,
     message: String,
-    buttonText: String = "Cerrar",
+    buttonNegativeText: String = "Cerrar",
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -88,8 +95,31 @@ fun SimpleAlertDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text(text = buttonText)
+                Text(text = buttonNegativeText)
             }
         }
     )
+}
+
+@Composable
+fun LoadingDialog(isLoading: Boolean) {
+    if (isLoading) {
+        Dialog(
+            onDismissRequest = { /* No permitir cerrar tocando afuera */ },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(120.dp)
+                    .background(Color.Transparent, shape = RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 4.dp
+                )
+            }
+        }
+    }
 }
