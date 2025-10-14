@@ -1,6 +1,7 @@
 package com.iglesiabethesda.bethesdapp.events.ui.view
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,12 +47,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.iglesiabethesda.bethesdapp.util.LoadingDialog
+import com.iglesiabethesda.bethesdapp.events.domain.model.EventModel
+import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.EventScreenViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.TextStyle
+import java.util.Date
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -62,7 +70,28 @@ fun EventScreen(navController: NavHostController) {
 @Preview(showBackground = true)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Screen(navController: NavHostController) {
+fun Screen(
+    navController: NavHostController,
+    viewModel: EventScreenViewModel = hiltViewModel()
+) {
+
+    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    LaunchedEffect(Unit) {
+        viewModel.getEvents(currentMonth.year, currentMonth.monthValue)
+    }
+
+    val eventResult by viewModel.getEvents
+    val showProgress by viewModel.isLoading
+    // variable para guardar los eventos
+    var eventt by remember { mutableStateOf<List<EventModel>>(emptyList()) }
+
+    // actualizar la variable cuando la petición sea exitosa
+    eventResult?.onSuccess { events ->
+        if (events.isNotEmpty()) {
+            eventt = events
+        }
+    }
+
 
     //Harcode de eventos
     val events = listOf(
@@ -86,7 +115,14 @@ fun Screen(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            SimpleCalendarScreen(events)
+            SimpleCalendarScreen(
+                eventt,
+                refreshEvents = { year, month ->
+                    Log.e("AQUII", "ANO "+year)
+                    Log.e("AQUII", "MES "+month)
+                    viewModel.getEvents(year, month)
+                }
+            )
         }
 
         FloatingActionButton(
@@ -99,27 +135,38 @@ fun Screen(navController: NavHostController) {
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Agregar")
         }
+
+        LoadingDialog(showProgress)
+
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SimpleCalendarScreen(events: List<CalendarEvent>) {
+fun SimpleCalendarScreen(
+    events: List<EventModel>,
+    refreshEvents: (year: Int, month: Int) -> Unit
+) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     var selectedDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
-    val selectedEvent = remember { mutableStateOf<CalendarEvent?>(null) }
+    val selectedEvent = remember { mutableStateOf<EventModel?>(null) }
 
     val daysOfWeek = DayOfWeek.values()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         // Header con flechas y nombre del mes
         Row(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { currentMonth = currentMonth.minusMonths(1) }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = null)
+            IconButton(onClick = {
+                currentMonth = currentMonth.minusMonths(1)
+                refreshEvents(currentMonth.year, currentMonth.monthValue)
+            }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Mes anterior")
             }
 
             Text(
@@ -128,8 +175,11 @@ fun SimpleCalendarScreen(events: List<CalendarEvent>) {
                 style = MaterialTheme.typography.titleLarge
             )
 
-            IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
-                Icon(Icons.Default.ArrowForward, contentDescription = null)
+            IconButton(onClick = {
+                currentMonth = currentMonth.plusMonths(1)
+                refreshEvents(currentMonth.year, currentMonth.monthValue)
+            }) {
+                Icon(Icons.Default.ArrowForward, contentDescription = "Mes siguiente")
             }
         }
 
@@ -169,13 +219,13 @@ fun SimpleCalendarScreen(events: List<CalendarEvent>) {
             daysList.chunked(7).forEach { week ->
                 Row(Modifier.fillMaxWidth()) {
                     week.forEach { date ->
-                        val hasEvents = date != null && events.any { it.date == date }
+                        val hasEvents = date != null && events.any { it.dateEvent.toLocalDate() == date }
                         val isToday = date == LocalDate.now()
                         val isFutureOrToday = date != null && !date.isBefore(LocalDate.now())
 
                         val background = when {
                             hasEvents && isFutureOrToday-> {
-                                val eventPriorities = events.filter { it.date == date }.map { it.priority }
+                                val eventPriorities = events.filter { it.dateEvent.toLocalDate() == date }.map { it.priorityEvent }
                                 val highestPriority = eventPriorities.minOrNull()
                                 when (highestPriority) {
                                     1 -> Color.Red.copy(alpha = 0.3f)
@@ -246,12 +296,12 @@ fun SimpleCalendarScreen(events: List<CalendarEvent>) {
 @Composable
 private fun ListEventDays(
     selectedDate: LocalDate?,
-    events: List<CalendarEvent>,
-    onEventSelected: (CalendarEvent) -> Unit
+    events: List<EventModel>,
+    onEventSelected: (EventModel) -> Unit
 ) {
 
     selectedDate?.let { date ->
-        val eventsOfDay = events.filter { it.date == date }
+        val eventsOfDay = events.filter { it.dateEvent.toLocalDate() == date }
         if (eventsOfDay.isNotEmpty()) {
             Text(
                 text = "Eventos del ${date.dayOfMonth}/${date.monthValue.toString().padStart(2, '0')}/${date.year}",
@@ -260,7 +310,7 @@ private fun ListEventDays(
             )
 
             eventsOfDay.forEach { event ->
-                val backgroundColor = when (event.priority) {
+                val backgroundColor = when (event.priorityEvent) {
                     1 -> Color(0xFFFFCDD2) // rojo claro
                     2 -> Color(0xFFFFF9C4) // amarillo claro
                     3 -> Color(0xFFC8E6C9) // verde claro
@@ -276,7 +326,7 @@ private fun ListEventDays(
                     colors = CardDefaults.cardColors(containerColor = backgroundColor)
                 ) {
                     Column(Modifier.padding(12.dp)) {
-                        Text(text = event.title, style = MaterialTheme.typography.titleSmall)
+                        Text(text = event.titleEvent, style = MaterialTheme.typography.titleSmall)
                     }
                 }
             }
@@ -303,14 +353,14 @@ private fun ListEventDays(
 
 @Composable
 private fun DescriptionEvetsDialog(
-    selectedEvent: MutableState<CalendarEvent?>
+    selectedEvent: MutableState<EventModel?>
 ) {
 
     selectedEvent.value?.let { event ->
         AlertDialog(
             onDismissRequest = { selectedEvent.value = null },
-            title = { Text(event.title) },
-            text = { Text(event.description) },
+            title = { Text(event.titleEvent) },
+            text = { Text(event.descriptionEvent) },
             confirmButton = {
                 TextButton(onClick = { selectedEvent.value = null }) {
                     Text("Cerrar")
@@ -320,6 +370,11 @@ private fun DescriptionEvetsDialog(
     }
 
 }
+
+fun Date.toLocalDate(): LocalDate =
+    this.toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 
 
 //pasar el modelo a una clase

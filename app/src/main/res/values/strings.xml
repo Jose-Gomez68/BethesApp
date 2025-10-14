@@ -3,9 +3,20 @@
 
     <!--NEW EVENT SCREEN-->
     <string name="tv_title_new_event">Titulo</string>
+    <string name="tv_title_hint_new_event">Titulo del Evento</string>
     <string name="tv_subtitle_descrip_new_event">Descripción</string>
     <string name="txt_field_descrip_new_event">Descripción del Evento</string>
     <string name="tv_title_priority_new_event">Prioridad</string>
     <string name="btn_title_save_new_event">Crear Evento</string>
+    <string name="tv_date_event_new_event">Fecha del Evento</string>
+    <string name="tv_date_event_hint_new_event">Selecciona la Fecha</string>
+    <string name="tv_notify_title_new_event">Notificar</string>
+    <string name="tv_switch_title_new_event">Notificar a todos los usarios</string>
+    <string name="tv_title_new_event_error">El titulo no puede estar vacio</string>
+    <string name="tv_descrip_new_event_error">Debe contener una descripción</string>
+    <string name="tv_priority_new_event_error">Selecciona la prioridad</string>
+    <string name="tv_date_new_event_error">Debes seleccionar una fecha</string>
+
+    <!---->
 
 </resources>
