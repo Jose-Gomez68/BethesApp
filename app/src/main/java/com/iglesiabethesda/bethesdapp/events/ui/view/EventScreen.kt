@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +54,8 @@ import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.events.domain.model.EventModel
 import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.EventScreenViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
+import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -81,6 +84,7 @@ fun Screen(
     }
 
     val eventResult by viewModel.getEvents
+    val eventDeleteResult by viewModel.getEventsDelete
     val showProgress by viewModel.isLoading
     // variable para guardar los eventos
     var eventt by remember { mutableStateOf<List<EventModel>>(emptyList()) }
@@ -121,6 +125,9 @@ fun Screen(
                     Log.e("AQUII", "ANO "+year)
                     Log.e("AQUII", "MES "+month)
                     viewModel.getEvents(year, month)
+                },
+                onDeleteEventSelected = {
+                    viewModel.deleteEventByUid(it!!.uidEvent)
                 }
             )
         }
@@ -138,6 +145,15 @@ fun Screen(
 
         LoadingDialog(showProgress)
 
+        if (eventDeleteResult){
+            SimpleAlertDialog(
+                title = "Ups!",
+                message = "No se pudo eliminar el evento \n favor de contactar con soporte.",
+                buttonNegativeText = "Cerrar",
+                onDismiss = {  }
+            )
+        }
+
     }
 }
 
@@ -145,11 +161,13 @@ fun Screen(
 @Composable
 fun SimpleCalendarScreen(
     events: List<EventModel>,
-    refreshEvents: (year: Int, month: Int) -> Unit
+    refreshEvents: (year: Int, month: Int) -> Unit,
+    onDeleteEventSelected: (EventModel?) -> Unit
 ) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     var selectedDate by remember { mutableStateOf<LocalDate?>(LocalDate.now()) }
     val selectedEvent = remember { mutableStateOf<EventModel?>(null) }
+    val showDialogDeleteEvent = remember { mutableStateOf<EventModel?>(null) }
 
     val daysOfWeek = DayOfWeek.values()
 
@@ -285,9 +303,30 @@ fun SimpleCalendarScreen(
         Spacer(Modifier.height(16.dp))
 
         // Lista de eventos del día seleccionado
-        ListEventDays(selectedDate, events, onEventSelected = { selectedEvent.value = it })
+        ListEventDays(
+            selectedDate,
+            events,
+            onEventSelected = { selectedEvent.value = it },
+            onDeleteEvent = {
+                showDialogDeleteEvent.value = it
+            }
+        )
     }
 
+    showDialogDeleteEvent.value?.let { event ->
+        SimpleAlertDialog2(
+            title = "Eliminar Evento ${event.titleEvent}",
+            message = "Deseas eliminar el evento seleccionado?",
+            buttonNegativeText = "No",
+            buttonPositiveeText = "Eliminar",
+            onConfirm = {
+                onDeleteEventSelected(event)
+                showDialogDeleteEvent.value = null
+                refreshEvents(currentMonth.year, currentMonth.monthValue)
+            },
+            onDismiss = { showDialogDeleteEvent.value = null }
+        )
+    }
     // Diálogo de evento al hacer clic en un evento listado
     DescriptionEvetsDialog(selectedEvent)
 }
@@ -297,7 +336,8 @@ fun SimpleCalendarScreen(
 private fun ListEventDays(
     selectedDate: LocalDate?,
     events: List<EventModel>,
-    onEventSelected: (EventModel) -> Unit
+    onEventSelected: (EventModel) -> Unit,
+    onDeleteEvent: (EventModel) -> Unit
 ) {
 
     selectedDate?.let { date ->
@@ -317,11 +357,15 @@ private fun ListEventDays(
                     else -> Color.LightGray
                 }
 
+                //.clickable { onEventSelected(event) }
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
-                        .clickable { onEventSelected(event) },
+                        .combinedClickable (
+                            onClick = { onEventSelected(event) },
+                            onLongClick = { onDeleteEvent(event) }
+                        ),
                     elevation = CardDefaults.cardElevation(4.dp),
                     colors = CardDefaults.cardColors(containerColor = backgroundColor)
                 ) {

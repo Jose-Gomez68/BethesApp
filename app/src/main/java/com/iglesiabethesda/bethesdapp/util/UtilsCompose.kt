@@ -102,6 +102,36 @@ fun SimpleAlertDialog(
 }
 
 @Composable
+fun SimpleAlertDialog2(
+    title: String,
+    message: String,
+    buttonNegativeText: String = "Cerrar",
+    buttonPositiveeText: String = "Si",
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = title)
+        },
+        text = {
+            Text(text = message)
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = buttonPositiveeText)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = buttonNegativeText)
+            }
+        }
+    )
+}
+
+@Composable
 fun LoadingDialog(isLoading: Boolean) {
     if (isLoading) {
         Dialog(

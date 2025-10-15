@@ -61,4 +61,13 @@ class NetworkEventsService @Inject constructor(
         return queryGetEvent.documents.mapNotNull { it.toObject(EventFirebaseModel::class.java)?.toModel() }
     }
 
+    suspend fun deleteEventByUId(uid: String) = kotlin.runCatching {
+
+        firebase.db.collection(EVENT_COLLECTION)
+            .document(uid)
+            .delete()
+            .await()
+
+    }.isSuccess
+
 }
