@@ -22,6 +22,7 @@ class GeneretedTokenMessageFCM @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     //https://www.youtube.com/watch?v=qy1hqa7b_v8
+    //AGREGARLE AL CREAR EL ITEM DE EVENT AGREGAR MI PROPIO TOKEN DEL DISPOSITIVO
 
     companion object {
         const val NOTIFICATIONS_CHANNEL_ID = "notification_fcm"
