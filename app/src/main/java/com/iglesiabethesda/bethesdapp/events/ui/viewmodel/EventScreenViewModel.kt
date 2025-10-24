@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iglesiabethesda.bethesdapp.data.network.GeneretedTokenMessageFCM
 import com.iglesiabethesda.bethesdapp.events.domain.model.EventModel
 import com.iglesiabethesda.bethesdapp.events.domain.usecase.DeleteEventByUidUseCase
 import com.iglesiabethesda.bethesdapp.events.domain.usecase.GetEventScreenUseCase
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EventScreenViewModel @Inject constructor(
     private val eventUseCase: GetEventScreenUseCase,
-    private val deleteEventUseCase: DeleteEventByUidUseCase
+    private val deleteEventUseCase: DeleteEventByUidUseCase,
+    private val generatedTokenMessageFCM: GeneretedTokenMessageFCM
 ): ViewModel() {
 
     private val _getEvents = mutableStateOf<Result<List<EventModel>>?>(null)
@@ -27,6 +29,7 @@ class EventScreenViewModel @Inject constructor(
     val isLoading: State<Boolean> = _isLoading
 
     fun getEvents(year: Int, month: Int) {
+        generatedTokenMessageFCM.getToken()
         viewModelScope.launch {
             _isLoading.value = true
             val result = eventUseCase(year, month)

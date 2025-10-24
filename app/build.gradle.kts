@@ -92,6 +92,8 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
     //liveData
     implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
+    //cloud message firebase notification push
+    implementation("com.google.firebase:firebase-messaging")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")

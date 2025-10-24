@@ -16,11 +16,14 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -404,7 +407,18 @@ private fun DescriptionEvetsDialog(
         AlertDialog(
             onDismissRequest = { selectedEvent.value = null },
             title = { Text(event.titleEvent) },
-            text = { Text(event.descriptionEvent) },
+            text = {  // Contenedor scrolleable
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 250.dp) // límite de altura para que aparezca el scroll
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text = event.descriptionEvent,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            },
             confirmButton = {
                 TextButton(onClick = { selectedEvent.value = null }) {
                     Text("Cerrar")

@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.iglesiabethesda.bethesdapp.data.network.GeneretedTokenMessageFCM
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 
@@ -27,6 +28,7 @@ fun Screen() {
 
     val context = LocalContext.current
     val shaeredPrf = SharedPreferencesConfig(context)
+    //val token = GeneretedTokenMessageFCM()
 
     Box(
         modifier = Modifier
