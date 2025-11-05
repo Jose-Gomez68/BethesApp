@@ -208,7 +208,7 @@ fun NavigationGraph(
         composable(
             Routes.MembersScreen.MembersRegisterScreen.route
         ) {
-            MembersRegisterScreen()
+            MembersRegisterScreen(navController)
         }
         composable(Routes.GroupsScreen.route) { GroupScreen(navController) }
         composable(

@@ -6,6 +6,9 @@ import com.iglesiabethesda.bethesdapp.members.data.MembersModel
 import java.util.Date
 import javax.inject.Inject
 
+/*ESTTA CLASE OBTENE O BUSCA AL
+* MIEMBRO POR SU MEMBERCODE PARA CUANDO SE VINCULA
+* EL USUARIO CON EL MIEMBRO*/
 class GetMembersUseCase  @Inject constructor(
     private val authenticationService: AuthenticationService,
     private val userService: UserService
@@ -14,7 +17,7 @@ class GetMembersUseCase  @Inject constructor(
     suspend operator fun invoke(memberCode: String): MembersModel? {
         val member: MembersModel? = userService.getMemberByMemberCode(memberCode)
 
-            return member ?: MembersModel(
+        return member ?: MembersModel(
                 "",
                 "",
                 "",
@@ -29,7 +32,7 @@ class GetMembersUseCase  @Inject constructor(
                 Date(),
                 Date()
 
-            )
+        )
     }
 
 }

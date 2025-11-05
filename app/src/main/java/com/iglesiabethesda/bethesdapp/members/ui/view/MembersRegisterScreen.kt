@@ -25,6 +25,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,17 +39,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.iglesiabethesda.bethesdapp.Login.viewmodel.UserRegisterViewModel
+import androidx.navigation.NavController
+import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MemberRegisterViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.LoadingDialog
+import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
 import java.util.Calendar
 
+//fun MembersRegisterScreen(viewModel: UserRegisterViewModel = hiltViewModel()) {
 @Composable
-fun MembersRegisterScreen(viewModel: UserRegisterViewModel = hiltViewModel()) {
-    Screen(viewModel)
+fun MembersRegisterScreen(navController: NavController, viewModel: MemberRegisterViewModel = hiltViewModel()) {
+    Screen(navController,viewModel)
 }
 
+//private fun Screen(viewModel: UserRegisterViewModel) {
 @Composable
-private fun Screen(viewModel: UserRegisterViewModel) {
+private fun Screen(navController: NavController, viewModel: MemberRegisterViewModel) {
+
+    val showDialog by viewModel.isLoading
+    val isMemberCreate by remember { viewModel::isMemberCreated }
+    val isShowError by remember { viewModel::showErrorDialog }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,15 +74,29 @@ private fun Screen(viewModel: UserRegisterViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             FormRegister(viewModel)
+
+            if (isMemberCreate) {
+                LaunchedEffect(Unit) {
+                    navController.popBackStack()
+                }
+            }else if(isShowError) {
+                SimpleAlertDialog(
+                    title = "Error",
+                    message = "Hubo un error al crear a la persona, intente nuevamente.",
+                    buttonNegativeText = "Aceptar"
+                ) { }
+            }
         }
+
+        LoadingDialog(showDialog)
 
     }
 }
 
 
-
+//private fun FormRegister(viewModel: UserRegisterViewModel) {
 @Composable
-private fun FormRegister(viewModel: UserRegisterViewModel) {
+private fun FormRegister(viewModel: MemberRegisterViewModel) {
 
    /* var etMemberName by remember { mutableStateOf("") }
     var etMemberApPa by remember { mutableStateOf("") }
@@ -82,7 +107,7 @@ private fun FormRegister(viewModel: UserRegisterViewModel) {
     var etMemberEmergency by remember { mutableStateOf("") }
     var etMemberEmail by remember { mutableStateOf("") }
     var etMemberBirthDay by remember { mutableStateOf("") }*/
-    var showDialog by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
