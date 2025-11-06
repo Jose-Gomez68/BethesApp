@@ -1,4 +1,4 @@
-package com.iglesiabethesda.bethesdapp.members.data
+package com.iglesiabethesda.bethesdapp.members.domain.model
 
 import java.util.Date
 
