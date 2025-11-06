@@ -1,11 +1,10 @@
 package com.iglesiabethesda.bethesdapp.Login.domain
 
-import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
 import com.iglesiabethesda.bethesdapp.data.network.UserService
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import java.util.Date
 import javax.inject.Inject
 

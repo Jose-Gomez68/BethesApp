@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.Login.domain.CreateAccountUseCase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

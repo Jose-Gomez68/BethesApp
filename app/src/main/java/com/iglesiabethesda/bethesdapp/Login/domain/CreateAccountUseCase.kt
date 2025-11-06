@@ -3,7 +3,7 @@ package com.iglesiabethesda.bethesdapp.Login.domain
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
 import com.iglesiabethesda.bethesdapp.data.network.UserService
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import javax.inject.Inject
 
 class CreateAccountUseCase @Inject constructor(

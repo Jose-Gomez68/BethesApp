@@ -11,7 +11,7 @@ import com.iglesiabethesda.bethesdapp.Login.ui.LoginViewState
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserLogin
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

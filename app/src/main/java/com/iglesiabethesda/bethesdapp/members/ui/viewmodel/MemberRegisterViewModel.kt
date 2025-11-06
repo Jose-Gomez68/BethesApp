@@ -1,13 +1,12 @@
 package com.iglesiabethesda.bethesdapp.members.ui.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.usecase.MemberRegisterUseCase
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,10 +59,8 @@ class MemberRegisterViewModel @Inject constructor(
             _isLoading.value = true
             val createdMember = memberRegisterUseCase.invoke(member)
             createdMember.onSuccess {
-                Log.e("EXITO SE CREO","CHINGON")
                 isMemberCreated = true
             }.onFailure {
-                Log.e("ERROOORRRR","NOO LA POLITZIA")
                 isMemberCreated = false
                 showErrorDialog = true
             }

@@ -1,7 +1,7 @@
 package com.iglesiabethesda.bethesdapp.members.domain.usecase
 
 import com.iglesiabethesda.bethesdapp.data.network.UserService
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.util.CrashlyticsModuleUtil.crashLytics
 import javax.inject.Inject
 
