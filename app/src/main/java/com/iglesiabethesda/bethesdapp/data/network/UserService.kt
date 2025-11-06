@@ -4,8 +4,8 @@ import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModelFirebase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
-import com.iglesiabethesda.bethesdapp.members.data.MembersModelFirebase
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModelFirebase
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
