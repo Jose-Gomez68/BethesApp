@@ -2,7 +2,7 @@ package com.iglesiabethesda.bethesdapp.members.domain.usecase
 
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
 import com.iglesiabethesda.bethesdapp.data.network.UserService
-import com.iglesiabethesda.bethesdapp.members.data.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import java.util.Date
 import javax.inject.Inject
 

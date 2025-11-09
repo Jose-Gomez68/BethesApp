@@ -1,4 +1,4 @@
-package com.iglesiabethesda.bethesdapp.members.ui.viewmodel
+package com.iglesiabethesda.bethesdapp.group.ui.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MembersViewModel @Inject constructor(
+class GroupRegisterViewModel @Inject
+constructor(
     private val getMembersListUseCase: GetMembersListUseCase,
     private val sharedPrf: SharedPreferencesConfig
 ): ViewModel() {
@@ -20,32 +21,15 @@ class MembersViewModel @Inject constructor(
     private val _getMembers = mutableStateOf<Result<List<MembersModel>>?>(null)
     val getMembers: State<Result<List<MembersModel>>?> = _getMembers
 
-    private val _getMembersDelete = mutableStateOf<Boolean>(false)
-    val getMembersDelete: State<Boolean> = _getMembersDelete
-
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
     fun getMember() {
         viewModelScope.launch {
             _isLoading.value = true
-            val result = getMembersListUseCase.invoke(sharedPrf.getMemberUid())
+            val result = getMembersListUseCase.invoke(null)
             _getMembers.value = result
 
-            _isLoading.value = false
-        }
-    }
-
-    fun deleteMemberByUid(uid:String) {//me guie de EventsScreenViewModel
-        viewModelScope.launch {
-            _isLoading.value = true
-            //val result = deleteEventUseCase.invoke(uid)
-           /* result.onSuccess {
-                _getEventsDelete.value = false
-            }.onFailure {
-                _getEventsDelete.value = true
-                //si falla es true y muestra el mensaje de error
-            }*/
             _isLoading.value = false
         }
     }

@@ -35,6 +35,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,7 +49,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.NewEventScreenViewModel
+import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupRegisterViewModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.view.UserListSelectedDialogScreen
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
@@ -59,7 +64,7 @@ fun GroupRegisterScreen() {
 
 
 @Composable
-private fun Screen() {
+private fun Screen(viewModel: GroupRegisterViewModel = hiltViewModel()) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +77,7 @@ private fun Screen() {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            FormRegister()
+            FormRegister(viewModel)
         }
 
     }
@@ -80,11 +85,21 @@ private fun Screen() {
 
 
 @Composable
-private fun FormRegister() {
+private fun FormRegister(viewModel: GroupRegisterViewModel) {
 
     var etGroupName by remember { mutableStateOf("") }
     var etGroupDescrip by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        viewModel.getMember()
+    }
+    val membersResult by viewModel.getMembers
+    var members by remember { mutableStateOf<List<MembersModel>>(emptyList()) }
+    membersResult?.onSuccess { memb ->
+        if (memb.isNotEmpty()){
+            members = memb
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -194,7 +209,7 @@ private fun FormRegister() {
     }
 
     if (showDialog) {
-        UserListSelectedDialogScreen(showDialog,
+        UserListSelectedDialogScreen(showDialog, members,
             onDismiss = { showDialog = false } // Cerrar el diálogo al presionar fuera
         )
     }

@@ -28,6 +28,7 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +41,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.EventScreenViewModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
+import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MembersViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 
 /*
 firesbase
@@ -55,18 +61,44 @@ fun MembersScreen(navController: NavHostController) {
 }
 
 @Composable
-private fun Screen(navController: NavHostController) {
+private fun Screen(
+    navController: NavHostController,
+    viewModel: MembersViewModel = hiltViewModel()
+) {
 
+    LaunchedEffect(Unit) {
+        viewModel.getMember()
+    }
     /*val searchQuery by remember {
         mutableStateOf("")
     }
 
     val filteredUsers = users.filter { it.contains(searchQuery, ignoreCase = true) }*/
+    val membersResult by viewModel.getMembers
+    val showProgress by viewModel.isLoading
+    var members by remember { mutableStateOf<List<MembersModel>>(emptyList()) }
     var searchQuery by remember {
         mutableStateOf("")
     }
 
     val context = LocalContext.current
+
+    membersResult?.onSuccess { memb ->
+        if (memb.isNotEmpty()){
+            members = memb
+        }
+    }
+
+    val filteredMembers = if (searchQuery.isNotBlank()) {
+        members.filter { member ->
+            // Aquí defines los campos donde buscar
+            member.name.contains(searchQuery, ignoreCase = true) ||
+                    member.apPaterno.contains(searchQuery, ignoreCase = true) ||
+                    member.apMaterno.contains(searchQuery, ignoreCase = true)
+        }
+    } else {
+        members
+    }
 
     Box(
         modifier = Modifier
@@ -82,7 +114,9 @@ private fun Screen(navController: NavHostController) {
         ){
             SearchFieldList(titleLabel = "Buscar Miembros",
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersList()
+            UsersList(filteredMembers)
+
+            LoadingDialog(showProgress)
         }
 
         MultiOptionFAB(navController)

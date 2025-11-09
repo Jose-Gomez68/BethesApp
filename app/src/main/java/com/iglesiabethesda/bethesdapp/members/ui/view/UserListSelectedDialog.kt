@@ -25,21 +25,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
-
 @Composable
-fun UserListSelectedDialogScreen(show: Boolean, onDismiss: () -> Unit) {
-    Screen(show, onDismiss)
+fun UserListSelectedDialogScreen(show: Boolean, membersList: List<MembersModel>, onDismiss: () -> Unit) {
+    Screen(show, membersList, onDismiss)
 }
 
 
 @Composable
-private fun Screen(show: Boolean, onDismiss: () -> Unit) {
+private fun Screen(show: Boolean, membersList: List<MembersModel>, onDismiss: () -> Unit) {
 
     if (show) {
         Dialog(
@@ -49,17 +50,28 @@ private fun Screen(show: Boolean, onDismiss: () -> Unit) {
                 dismissOnClickOutside = true
             )
         ) {
-            ScreenDialog()
+            ScreenDialog(membersList)
         }
     }
 
 }
 
 @Composable
-private fun ScreenDialog() {
+private fun ScreenDialog(membersList: List<MembersModel>) {
 
     var searchQuery by remember {
         mutableStateOf("")
+    }
+
+    val filteredMembers = if (searchQuery.isNotBlank()) {
+        membersList.filter { member ->
+            // Aquí defines los campos donde buscar
+            member.name.contains(searchQuery, ignoreCase = true) ||
+                    member.apPaterno.contains(searchQuery, ignoreCase = true) ||
+                    member.apMaterno.contains(searchQuery, ignoreCase = true)
+        }
+    } else {
+        membersList
     }
 
     Box(
@@ -78,7 +90,7 @@ private fun ScreenDialog() {
         ){
             SearchFieldList(titleLabel = "Buscar Miembros",
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersList()
+            UsersList(filteredMembers)
         }
     }
 }

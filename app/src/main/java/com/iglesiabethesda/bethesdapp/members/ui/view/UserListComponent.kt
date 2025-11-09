@@ -27,11 +27,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
+import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 
 @Composable
-fun UsersList() {
+fun UsersList(membersList: List<MembersModel>) {
     val userList = listOf(
         "Juan Pérez - M, 30",
         "María López - F, 25",
@@ -51,15 +53,15 @@ fun UsersList() {
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        items(userList) { user ->
-            UserItem(user)
+        items(membersList) { member ->
+            UserItem(member)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun UserItem(user: String) {
+private fun UserItem(member: MembersModel) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -70,7 +72,7 @@ private fun UserItem(user: String) {
             .clip(RoundedCornerShape(11.dp))
             .combinedClickable(
                 onClick = {
-                    Toast.makeText(context, "Click en ${user}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Click en ${member}", Toast.LENGTH_SHORT).show()
                 },
                 onLongClick = {
                     Toast.makeText(context, "Long Click ", Toast.LENGTH_SHORT).show()
@@ -79,8 +81,8 @@ private fun UserItem(user: String) {
 
     ) {
         //UserImage(imageUser = 1)// no se usa imagen ya que no se pagara el Storage
-        InitialsAvatar(fullName = "Jose Gomez")
-        UserDescrip(user)
+        InitialsAvatar(fullName = "${member.name} ${member.apPaterno} ${member.apMaterno}")
+        UserDescrip(member)
     }
 
 }
@@ -98,8 +100,9 @@ private fun UserImage(imageUser: Int?) {
 }
 
 @Composable
-private fun UserDescrip(user: String) {
+private fun UserDescrip(member: MembersModel) {
 
+    val utilFunction = UtilsFunctions()
 
     Column(
         modifier = Modifier
@@ -109,14 +112,14 @@ private fun UserDescrip(user: String) {
         ) {
         // Nombre del usuario
         Text(
-            text = "Nombre del Usuario", // Aquí pones el nombre del usuario
+            text = "${member.name} ${member.apPaterno} ${member.apMaterno}", // Aquí pones el nombre del usuario
             style = MaterialTheme.typography.bodyLarge,
             color = Color.Black
         )
 
         // Sexo y Edad del usuario
         Text(
-            text = "Sexo: M, Edad: 25", // Aquí pones el sexo y edad
+            text = "Edad: ${utilFunction.ageCalculated(member.birthDay)}", // Aquí pones el sexo y edad
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
             color = Color.Gray
         )
