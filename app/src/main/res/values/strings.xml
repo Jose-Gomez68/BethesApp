@@ -17,6 +17,13 @@
     <string name="tv_priority_new_event_error">Selecciona la prioridad</string>
     <string name="tv_date_new_event_error">Debes seleccionar una fecha</string>
 
-    <!---->
+    <!--REGISTER MEMBER-->
+    <string name="msg_error_member_name">El nombre no puede ser vacio</string>
+    <string name="msg_error_member_ap_pa">El apellido no puede ser vacio</string>
+    <string name="msg_error_member_hobby">Pasa tiempo no puede ser vacio</string>
+    <string name="msg_error_member_tel">Telefono no puede ser vacio</string>
+    <string name="msg_error_member_tel_invalid">Telefono invalido</string>
+    <string name="msg_error_member_email_invalid">Correo invalido</string>
+    <string name="msg_error_member_birth_day">La fecha no puede ser vacia</string>
 
 </resources>

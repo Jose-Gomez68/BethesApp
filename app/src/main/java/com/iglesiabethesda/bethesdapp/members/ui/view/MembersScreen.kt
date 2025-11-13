@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.iglesiabethesda.bethesdapp.R
-import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.EventScreenViewModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MembersViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
@@ -114,7 +113,7 @@ private fun Screen(
         ){
             SearchFieldList(titleLabel = "Buscar Miembros",
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersList(filteredMembers)
+            UsersList(filteredMembers, navController)
 
             LoadingDialog(showProgress)
         }
