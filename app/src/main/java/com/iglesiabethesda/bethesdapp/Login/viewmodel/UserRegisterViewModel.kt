@@ -25,6 +25,7 @@ class UserRegisterViewModel @Inject constructor(
     var memberHobby by mutableStateOf("")
     var memberJob by mutableStateOf("")
     var memberTel by mutableStateOf("")
+    var memberAddress by mutableStateOf("")
     var memberEmergency by mutableStateOf("")
     var memberEmail by mutableStateOf("")
     var memberBirthDay by mutableStateOf("")
@@ -42,7 +43,7 @@ class UserRegisterViewModel @Inject constructor(
         println("Fecha Nacimiento: $memberBirthDay")
 
         val member = MembersModel("",memberName,memberApPa,memberApMa, memberHobby, memberJob,
-            memberTel, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 2,
+            memberTel, memberAddress, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 2,
             utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()
         )
 

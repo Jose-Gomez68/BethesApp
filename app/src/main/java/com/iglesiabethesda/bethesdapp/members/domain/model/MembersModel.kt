@@ -10,6 +10,7 @@ data class MembersModel(
     val hobby: String,
     val job: String,
     val tel: String,
+    val address: String,
     val emergencyContact: String,
     val email: String,
     val birthDay: Date,

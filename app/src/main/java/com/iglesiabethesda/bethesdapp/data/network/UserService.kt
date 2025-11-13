@@ -65,6 +65,7 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             "hobby" to membersModel.hobby,
             "job" to membersModel.job,
             "tel" to membersModel.tel,
+            "address" to membersModel.address,
             "emergencyContact" to membersModel.emergencyContact,
             "email" to membersModel.email,
             "birthDay" to membersModel.birthDay,

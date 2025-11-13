@@ -10,6 +10,7 @@ class MembersModelFirebase {
     var hobby: String = ""
     var job: String = ""
     var tel: String = ""
+    val address: String = ""
     var emergencyContact: String = ""
     var email: String = ""
     var birthDay: Date = Date()
@@ -20,7 +21,7 @@ class MembersModelFirebase {
     fun toModel(): MembersModel {
         return MembersModel(
             uid, name, apPaterno, apMaterno, hobby, job,
-            tel, emergencyContact, email, birthDay, statusAccount, createdDate, updateDate
+            tel, address, emergencyContact, email, birthDay, statusAccount, createdDate, updateDate
         )
     }
 }

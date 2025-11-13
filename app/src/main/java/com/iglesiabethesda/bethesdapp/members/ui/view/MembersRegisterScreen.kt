@@ -137,6 +137,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberNameError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -161,6 +171,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberApPaError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -184,6 +204,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
+
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberApMaError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -213,6 +243,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
+
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberHobbyError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -263,6 +303,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberTelError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Contacto (Tel)", // Aquí pones el nombre del usuario
@@ -286,6 +336,16 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
+
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberEmergencyError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -311,6 +371,43 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberEmailError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "Dirección", // Aquí pones el nombre del usuario
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+            color = Color.Black,
+
+            )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.memberAddress,
+            onValueChange = { viewModel.memberAddress = it },
+            label = { Text("Dirección (Opcional)") }, // Label flotante
+            shape = RoundedCornerShape(12.dp), // Bordes redondeados
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 150.dp),
+            maxLines = 5,
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = containerColor1,
+                unfocusedContainerColor = containerColor1,
+                disabledContainerColor = containerColor1,
+                focusedBorderColor = Color.Blue,
+                unfocusedBorderColor = Color.Transparent,
+            )
+        )
+
         Spacer(modifier = Modifier.height(20.dp))
 
         BirthdayPicker(
@@ -318,10 +415,24 @@ private fun FormRegister(viewModel: MemberRegisterViewModel) {
             onDateSelected = { viewModel.memberBirthDay = it }
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.memberBirthDayError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { viewModel.registerMember() },
+            onClick = {
+                if (viewModel.validateForm()){
+                    viewModel.registerMember()
+                }
+            },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1980E6)),
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
