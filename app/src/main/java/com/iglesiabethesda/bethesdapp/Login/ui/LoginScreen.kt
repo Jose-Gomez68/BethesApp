@@ -129,7 +129,7 @@ private fun Screen(
             FormLogin(
                 navController,
                 email = email,
-                onEmailChange = { email = it },
+                onEmailChange = { email = it.trim() },
                 password = password,
                 onPasswordChange = { password = it },
                 onLoginClick = {
@@ -142,7 +142,7 @@ private fun Screen(
                         return@FormLogin
                     }
 
-                    viewModel.loginUser(email, password)
+                    viewModel.loginUser(email.trim(), password)
                     // viewModel.login(email, password)
                 },
                 viewState
