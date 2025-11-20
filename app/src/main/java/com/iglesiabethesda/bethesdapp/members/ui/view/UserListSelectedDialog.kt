@@ -90,7 +90,7 @@ private fun ScreenDialog(membersList: List<MembersModel>) {
         ){
             SearchFieldList(titleLabel = "Buscar Miembros",
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersList(filteredMembers)
+            UsersList(filteredMembers, null)
         }
     }
 }

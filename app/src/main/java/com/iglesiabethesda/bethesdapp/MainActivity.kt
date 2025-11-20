@@ -28,10 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginResPasswordScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.SignUpScreen
@@ -42,12 +46,16 @@ import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
 import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
 import com.iglesiabethesda.bethesdapp.me.ui.view.MeScreen
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
+import com.iglesiabethesda.bethesdapp.members.ui.view.MemberDetailsScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersRegisterScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersScreen
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.BethestaAppTheme
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 /**ACCOUNT GOOGLE DB BETHESTAPP
  * bethestapp@gmail.com
@@ -81,6 +89,7 @@ class MainActivity : ComponentActivity() {
                     // Subrutas donde ocultas solo el bottom bar (pero mantienes top con back)
                     val hideBottomBar = currentRoute in listOf(
                         Routes.MembersScreen.MembersRegisterScreen.route,
+                        Routes.MembersScreen.MemberDetailsScreen.route,
                         Routes.GroupsScreen.GroupRegisterScreen.route,
                         Routes.EventsScreen.NewEventScreen.route
                     )
@@ -116,6 +125,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
         Routes.HomeScreen.route to "Inicio",
         Routes.MembersScreen.route to "Miembros",
         Routes.MembersScreen.MembersRegisterScreen.route to "Registrar Usuario",
+        Routes.MembersScreen.MemberDetailsScreen.route to "Detalles de la Persona",
         Routes.GroupsScreen.route to "Grupos",
         Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.EventsScreen.route to "Eventos",
@@ -125,8 +135,10 @@ fun Toolbar(currentRoute: String, navController: NavController) {
 
     val title = screenTitles[currentRoute] ?: "App"
 
+    //flecha de return en vistas secundarias
     val showBackButton = currentRoute in listOf(
         Routes.MembersScreen.MembersRegisterScreen.route,
+        Routes.MembersScreen.MemberDetailsScreen.route,
         Routes.GroupsScreen.GroupRegisterScreen.route,
         Routes.EventsScreen.NewEventScreen.route
     )
@@ -205,6 +217,24 @@ fun NavigationGraph(
         composable(Routes.LoginRestPasswordScreen.route) { LoginResPasswordScreen(navController) }
         composable(Routes.HomeScreen.route) { HomeScreen() }
         composable(Routes.MembersScreen.route) { MembersScreen(navController) }
+        composable(
+            Routes.MembersScreen.MemberDetailsScreen.route,
+            arguments = listOf(
+                navArgument("memberJson") { type = NavType.StringType }
+            )
+        ) {backStackEntry ->
+            val memberJson = backStackEntry.arguments?.getString("memberJson")
+
+            val gson = GsonBuilder()
+                .setDateFormat("MMM dd, yyyy hh:mm:ss a")
+                .create()
+
+            val member = gson.fromJson(
+                URLDecoder.decode(memberJson, StandardCharsets.UTF_8.toString()),
+                MembersModel::class.java
+            )
+            MemberDetailsScreen(member)
+        }
         composable(
             Routes.MembersScreen.MembersRegisterScreen.route
         ) {

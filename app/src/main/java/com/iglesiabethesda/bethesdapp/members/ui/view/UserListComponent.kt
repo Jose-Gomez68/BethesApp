@@ -26,14 +26,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
-fun UsersList(membersList: List<MembersModel>) {
+fun UsersList(membersList: List<MembersModel>, navController: NavHostController?) {
     val userList = listOf(
         "Juan Pérez - M, 30",
         "María López - F, 25",
@@ -54,14 +59,14 @@ fun UsersList(membersList: List<MembersModel>) {
             .padding(8.dp)
     ) {
         items(membersList) { member ->
-            UserItem(member)
+            UserItem(member, navController)
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun UserItem(member: MembersModel) {
+private fun UserItem(member: MembersModel, navController: NavHostController?) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -72,7 +77,23 @@ private fun UserItem(member: MembersModel) {
             .clip(RoundedCornerShape(11.dp))
             .combinedClickable(
                 onClick = {
-                    Toast.makeText(context, "Click en ${member}", Toast.LENGTH_SHORT).show()
+                    if (navController != null) {
+                        navController!!.let {
+                            // Gson con formato de fecha personalizado
+                            val gson = GsonBuilder()
+                                .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                                .create()
+
+                            // Convertir el objeto a JSON
+                            val memberJson = URLEncoder.encode(
+                                gson.toJson(member),
+                                StandardCharsets.UTF_8.toString()
+                            )
+
+                            // Navegar pasando el JSON
+                            it.navigate("MemberDetailsScreen/$memberJson")
+                        }
+                    }
                 },
                 onLongClick = {
                     Toast.makeText(context, "Long Click ", Toast.LENGTH_SHORT).show()
