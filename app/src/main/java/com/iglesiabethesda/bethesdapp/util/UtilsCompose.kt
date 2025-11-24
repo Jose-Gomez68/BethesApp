@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ import androidx.compose.ui.window.DialogProperties
 import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
+import com.iglesiabethesda.bethesdapp.R
 
 @Composable
 fun GifImageLocal(@DrawableRes drawableId: Int, modifier: Modifier = Modifier) {
@@ -82,7 +84,7 @@ fun InitialsAvatar(
 fun SimpleAlertDialog(
     title: String,
     message: String,
-    buttonNegativeText: String = "Cerrar",
+    buttonNegativeText: String = stringResource(id = R.string.simple_alert_dialog_close_utils_compose),
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -105,7 +107,7 @@ fun SimpleAlertDialog(
 fun SimpleAlertDialog2(
     title: String,
     message: String,
-    buttonNegativeText: String = "Cerrar",
+    buttonNegativeText: String = stringResource(id = R.string.simple_alert_dialog_close_utils_compose),
     buttonPositiveeText: String = "Si",
     onConfirm: () -> Unit,
     onDismiss: () -> Unit

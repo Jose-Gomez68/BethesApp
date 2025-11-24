@@ -32,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -156,10 +156,10 @@ private fun PerfilName(member: MembersModel) {
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
             text = when (member.statusAccount) {
-                1 -> "Cuenta Pendiente"
-                2 -> "Cuenta Activa"
-                3 -> "Cuenta Desactivada"
-                else -> "Cuenta Eliminada"
+                1 -> stringResource(id = R.string.status_pending)
+                2 -> stringResource(id = R.string.status_active)
+                3 -> stringResource(id = R.string.status_disabled)
+                else -> stringResource(id = R.string.status_deleted)
             }, // modificar saber cual estatus es activo
             style = typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
             color = Color.Gray
@@ -177,7 +177,7 @@ private fun ContactInf(member: MembersModel) {
     ){
 
         Text(
-            text = "Informacion de Contacto",
+            text = stringResource(id = R.string.title_info_contact_member_detail),
             style = typography.bodyLarge,
             color = Color.Black,
             fontSize = 18.sp,
@@ -196,7 +196,7 @@ private fun ContactInf(member: MembersModel) {
         //Spacer(modifier = Modifier.height(8.dp))
         CardViewInfo(
             icon = R.drawable.phone_stich,
-            title = "Telefono",
+            title = stringResource(id = R.string.info_tel_member_detail),
             value = member.tel
         )
 
@@ -204,7 +204,7 @@ private fun ContactInf(member: MembersModel) {
 
         CardViewInfo(
             icon = R.drawable.phone_stich,
-            title = "Telefono de Contacto",
+            title = stringResource(id = R.string.info_tel_contact_member_detail),
             value = member.emergencyContact
         )
 
@@ -212,22 +212,22 @@ private fun ContactInf(member: MembersModel) {
 
         CardViewInfo(
             icon = R.drawable.email_stich,
-            title = "Email",
-            value = if (member.email.isNullOrEmpty()) "no hay un correo registrado" else member.email
+            title = stringResource(id = R.string.info_email_member_detail),
+            value = if (member.email.isNullOrEmpty()) stringResource(id = R.string.info_email2_member_detail) else member.email
         )
 
         Spacer(modifier = Modifier.height(5.dp))
 
         CardViewInfo(
             icon = R.drawable.address_stich,
-            title = "Direccion",
-            value = if (member.address.isNullOrEmpty()) "sin dirección" else member.address
+            title = stringResource(id = R.string.info_address_member_detail),
+            value = if (member.address.isNullOrEmpty()) stringResource(id = R.string.info_address2_member_detail) else member.address
         )
 
         Spacer(modifier = Modifier.height(15.dp))
 
         Text(
-            text = "Informacion Adicional",
+            text = stringResource(id = R.string.title_info_aditional_member_detail),
             style = typography.bodyLarge,
             color = Color.Black,
             fontSize = 18.sp,
@@ -238,7 +238,7 @@ private fun ContactInf(member: MembersModel) {
 
         CardViewInfo(
             icon = R.drawable.calendar,
-            title = "Fecha de Nacimiento",
+            title = stringResource(id = R.string.info_dateBirth_member_detail),
             value = UtilsFunctions().formatDateInSpanish(member.birthDay)
         )
 
@@ -246,16 +246,16 @@ private fun ContactInf(member: MembersModel) {
 
         CardViewInfo(
             icon = R.drawable.calendar,
-            title = "Edad:",
-            value = "${UtilsFunctions().ageCalculated(member.birthDay)} años"
+            title = stringResource(id = R.string.info_age_member_detail),
+            value = stringResource(id = R.string.info_age2_member_detail, UtilsFunctions().ageCalculated(member.birthDay))
         )
 
         Spacer(modifier = Modifier.height(5.dp))
 
         CardViewInfo(
             icon = R.drawable.user_stich,
-            title = "Estatus",
-            value = "Activo como Miembro"
+            title = stringResource(id = R.string.info_status_member_detail),
+            value = stringResource(id = R.string.info_status2_member_detail)
         )
 
 
@@ -335,7 +335,7 @@ private fun ActionButtonsRow(
                     contentColor = Color.Black
                 )
             ) {
-                Text(text = "Editar")
+                Text(text = stringResource(id = R.string.info_button_edit_member_detail))
             }
 
             // ======= BOTÓN CONTACTAR =======
@@ -347,7 +347,7 @@ private fun ActionButtonsRow(
                         contentColor = Color.White
                     )
                 ) {
-                    Text(text = "Contactar")
+                    Text(text = stringResource(id = R.string.info_button_contact_member_detail))
                 }
 
                 // ======== MENÚ QUE SE DESPLIEGA ========
@@ -357,7 +357,7 @@ private fun ActionButtonsRow(
                 ) {
 
                     DropdownMenuItem(
-                        text = { Text("Enviar Email") },
+                        text = { Text(stringResource(id = R.string.info_button_send_email_member_detail)) },
                         onClick = {
                             expanded = false
                             onEmailClick()
@@ -365,7 +365,7 @@ private fun ActionButtonsRow(
                     )
 
                     DropdownMenuItem(
-                        text = { Text("WhatsApp") },
+                        text = { Text(stringResource(id = R.string.info_button_send_whatsapp_member_detail)) },
                         onClick = {
                             expanded = false
                             onWhatsappClick()
@@ -373,7 +373,7 @@ private fun ActionButtonsRow(
                     )
 
                     DropdownMenuItem(
-                        text = { Text("Llamar") },
+                        text = { Text(stringResource(id = R.string.info_button_send_call_member_detail)) },
                         onClick = {
                             expanded = false
                             onCallClick()

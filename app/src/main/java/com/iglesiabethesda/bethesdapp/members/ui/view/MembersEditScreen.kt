@@ -34,12 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MemberUpdateViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
@@ -93,9 +95,9 @@ private fun ScreenEdit(
                 }
             } else if (isShowError) {
                 SimpleAlertDialog(
-                    title = "Error",
-                    message = "Hubo un error al actualizar a la persona, intente nuevamente.",
-                    buttonNegativeText = "Aceptar"
+                    title = stringResource(id = R.string.dialog_error_title_member_edit),
+                    message = stringResource(id = R.string.dialog_error_message_member_edit),
+                    buttonNegativeText = stringResource(id = R.string.dialog_error_positivebutton_member_edit)
                 ) { }
             }
         }
@@ -115,7 +117,7 @@ private fun FormEdit(
     ) {
 
         Text(
-            text = "Editar Persona",
+            text = stringResource(id = R.string.title_member_edit),
             style = typography.bodyLarge.copy(
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp
@@ -129,12 +131,15 @@ private fun FormEdit(
         val containerColor1 = Color(0xFFF5F5F5)
 
         /** NOMBRE **/
-        Text("Nombre", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_name_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberName,
             onValueChange = { viewModel.memberName = it },
-            label = { Text("Ingresa el Nombre") },
+            label = { Text(stringResource(id = R.string.form_hint_name_member_edit)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -149,12 +154,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** APELLIDO PATERNO **/
-        Text("Apellido Paterno", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_apP_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberApPa,
             onValueChange = { viewModel.memberApPa = it },
-            label = { Text("Ingresa el Apellido Paterno") },
+            label = { Text(stringResource(id = R.string.form_hint_apP_member_edit)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -169,12 +177,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** APELLIDO MATERNO **/
-        Text("Apellido Materno", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_apM_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberApMa,
             onValueChange = { viewModel.memberApMa = it },
-            label = { Text("Ingresa el Apellido Materno") },
+            label = { Text(stringResource(id = R.string.form_hint_apM_member_edit)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -189,12 +200,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** HOBBY **/
-        Text("Pasa tiempo", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_hobby_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberHobby,
             onValueChange = { viewModel.memberHobby = it },
-            label = { Text("Descripción") },
+            label = { Text(stringResource(id = R.string.form_hint_hobby_member_edit)) },
             maxLines = 5,
             modifier = Modifier
                 .fillMaxWidth()
@@ -212,12 +226,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** OFICIO **/
-        Text("Oficio", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_job_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberJob,
             onValueChange = { viewModel.memberJob = it },
-            label = { Text("Oficio (Opcional)") },
+            label = { Text(stringResource(id = R.string.form_hint_job_member_edit)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -231,12 +248,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** TELÉFONO **/
-        Text("Teléfono", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_tel_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberTel,
             onValueChange = { viewModel.memberTel = it },
-            label = { Text("Tel") },
+            label = { Text(stringResource(id = R.string.form_hint_tel_member_edit)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -252,12 +272,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** CONTACTO EMERGENCIA **/
-        Text("Contacto de Emergencia", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_tel_emergency_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberEmergency,
             onValueChange = { viewModel.memberEmergency = it },
-            label = { Text("Contacto (Tel)") },
+            label = { Text(stringResource(id = R.string.form_hint_tel_emergency_member_edit)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
@@ -273,12 +296,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** CORREO **/
-        Text("Correo Electrónico", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_email_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberEmail,
             onValueChange = { viewModel.memberEmail = it },
-            label = { Text("Email (Opcional)") },
+            label = { Text(stringResource(id = R.string.form_hint_email_member_edit)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
@@ -293,12 +319,15 @@ private fun FormEdit(
         Spacer(Modifier.height(20.dp))
 
         /** DIRECCIÓN **/
-        Text("Dirección", style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+        Text(
+            stringResource(id = R.string.form_title_address_member_edit),
+            style = typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+        )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = viewModel.memberAddress,
             onValueChange = { viewModel.memberAddress = it },
-            label = { Text("Dirección (Opcional)") },
+            label = { Text(stringResource(id = R.string.form_hint_address_member_edit)) },
             maxLines = 5,
             modifier = Modifier
                 .fillMaxWidth()
@@ -336,7 +365,10 @@ private fun FormEdit(
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            Text("Actualizar persona", color = Color.White, fontWeight = FontWeight.Bold)
+            Text(
+                stringResource(id = R.string.form_button_title_update_member_edit),
+                color = Color.White, fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -381,7 +413,7 @@ private fun BirthdayPicker(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Selecciona tu fecha de nacimiento",
+            text = stringResource(id = R.string.form_title_birth_day_member_edit),
             fontSize = 20.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -396,7 +428,7 @@ private fun BirthdayPicker(
         ) {
             Text(
                 modifier = Modifier.align(alignment = Alignment.Center),
-                text = if (selectedDate.isNotEmpty()) selectedDate else "Selecciona la fecha",
+                text = if (selectedDate.isNotEmpty()) selectedDate else stringResource(id = R.string.form_hint_birth_day_member_edit),
                 fontSize = 16.sp,
                 color = Color.Black
             )

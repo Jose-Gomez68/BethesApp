@@ -26,4 +26,58 @@
     <string name="msg_error_member_email_invalid">Correo invalido</string>
     <string name="msg_error_member_birth_day">La fecha no puede ser vacia</string>
 
+    <!--MEMBER DETAILS-->
+    <string name="title_info_contact_member_detail">Informacion de Contacto</string>
+    <string name="info_tel_member_detail">Telefono</string>
+    <string name="info_tel_contact_member_detail">Telefono de Contacto</string>
+    <string name="info_email_member_detail">Email</string>
+    <string name="info_email2_member_detail">no hay un correo registrado</string>
+    <string name="info_address_member_detail">Direccion</string>
+    <string name="info_address2_member_detail">sin dirección</string>
+    <string name="title_info_aditional_member_detail">Informacion Adicional</string>
+    <string name="info_dateBirth_member_detail">Fecha de Nacimiento</string>
+    <string name="info_age_member_detail">Edad:</string>
+    <string name="info_age2_member_detail">%1$d años</string>
+    <string name="info_status_member_detail">Estatus</string>
+    <string name="info_status2_member_detail">Activo como Miembro</string>
+    <string name="status_pending">Cuenta Pendiente</string>
+    <string name="status_active">Cuenta Activa</string>
+    <string name="status_disabled">Cuenta Desactivada</string>
+    <string name="status_deleted">Cuenta Eliminada</string>
+    <string name="info_button_edit_member_detail">Editar</string>
+    <string name="info_button_contact_member_detail">Contactar</string>
+    <string name="info_button_send_email_member_detail">Enviar Email</string>
+    <string name="info_button_send_whatsapp_member_detail">WhatsApp</string>
+    <string name="info_button_send_call_member_detail">Llamar</string>
+
+    <!--MEMBERS EDIT-->
+    <string name="dialog_error_title_member_edit">Error</string>
+    <string name="dialog_error_message_member_edit">Hubo un error al actualizar a la persona, intente nuevamente.</string>
+    <string name="dialog_error_positivebutton_member_edit">Aceptar</string>
+    <string name="title_member_edit">Editar Persona</string>
+    <string name="form_title_name_member_edit">Nombre</string>
+    <string name="form_hint_name_member_edit">Ingresa el nombre</string>
+    <string name="form_title_apP_member_edit">Apellido Paterno</string>
+    <string name="form_hint_apP_member_edit">Ingresa el Apellido Paterno</string>
+    <string name="form_title_apM_member_edit">Apellido Materno</string>
+    <string name="form_hint_apM_member_edit">Ingresa el Apellido Materno</string>
+    <string name="form_title_hobby_member_edit">Pasa tiempo</string>
+    <string name="form_hint_hobby_member_edit">Descripción</string>
+    <string name="form_title_job_member_edit">Oficio</string>
+    <string name="form_hint_job_member_edit">Oficio (Opcional)</string>
+    <string name="form_title_tel_member_edit">Teléfono</string>
+    <string name="form_hint_tel_member_edit">Tel</string>
+    <string name="form_title_tel_emergency_member_edit">Contacto de Emergencia</string>
+    <string name="form_hint_tel_emergency_member_edit">Contacto (Tel)</string>
+    <string name="form_title_email_member_edit">Correo Electrónico</string>
+    <string name="form_hint_email_member_edit">Email (Opcional)</string>
+    <string name="form_title_address_member_edit">Dirección</string>
+    <string name="form_hint_address_member_edit">Dirección (Opcional)</string>
+    <string name="form_title_birth_day_member_edit">Selecciona tu fecha de nacimiento</string>
+    <string name="form_hint_birth_day_member_edit">Selecciona la fecha</string>
+    <string name="form_button_title_update_member_edit">Actualizar persona</string>
+
+    <!--UTILS COMPOSE-->
+    <string name="simple_alert_dialog_close_utils_compose">Cerrar</string>
+
 </resources>
