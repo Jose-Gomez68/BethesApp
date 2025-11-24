@@ -1,11 +1,11 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
-import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModelFirebase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModelFirebase
+import com.iglesiabethesda.bethesdapp.util.CrashlyticsModuleUtil.crashLytics
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -78,8 +78,34 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         docRef.set(user).await()
     }.isSuccess
 
+    /*UPDATE MEMBER*/
+    suspend fun updateMemberTable(membersModel: MembersModel): Boolean = runCatching {
+        val collection = firebase.db.collection(MEMBER_COLLECTION)
+
+        // Aquí el UID ya viene dentro del modelo (el miembro ya existe)
+        val uid = membersModel.uid ?: return@runCatching false
+
+        val updatedUser = hashMapOf<String, Any?>(
+            "name" to membersModel.name,
+            "apPaterno" to membersModel.apPaterno,
+            "apMaterno" to membersModel.apMaterno,
+            "hobby" to membersModel.hobby,
+            "job" to membersModel.job,
+            "tel" to membersModel.tel,
+            "address" to membersModel.address,
+            "emergencyContact" to membersModel.emergencyContact,
+            "email" to membersModel.email,
+            "birthDay" to membersModel.birthDay,
+            "statusAccount" to membersModel.statusAccount, // si lo deseas actualizar
+            "updateDate" to membersModel.updateDate
+        )
+
+        // Actualiza solo los campos enviados
+        collection.document(uid).update(updatedUser).await()
+    }.isSuccess
+
+
     suspend fun getMemberByMemberCode(memberCode: String): MembersModel? = kotlin.runCatching {
-        Log.e("AQUI ESTA EL CODIGO", "$memberCode")
         val queryGetMember = firebase
             .db
             .collection(MEMBER_COLLECTION)
@@ -89,13 +115,15 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
 
         if (!queryGetMember.isEmpty) {
             val document = queryGetMember.documents[0]
-            Log.e("AQUI ESTA EL CODIGO", "${document?.data?.get("name")}")
             document.toObject(MembersModelFirebase::class.java)?.toModel()
         } else {
             null
         }
     }.onFailure {
-        Log.e("FIREBASE_ERROR", "Fallo al obtener miembro: ${it.message}", it)
+        crashLytics(
+            exception = it as Exception,
+            message = "Error al actualizar al obtener al miembro: ${it.message}"
+        )
     }.getOrNull()
 
 
@@ -168,7 +196,10 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             null
         }
     }.onFailure {
-        Log.e("FIREBASE_ERROR", "Fallo al obtener miembro por email: ${it.message}", it)
+        crashLytics(
+            exception = it as Exception,
+            message = "Error al actualizar al obtener al miembro por email: ${it.message}"
+        )
     }.getOrNull()
 
 
@@ -187,7 +218,10 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
             null
         }
     }.onFailure {
-        Log.e("FIREBASE_ERROR", "Fallo al obtener usuario por email: ${it.message}", it)
+        crashLytics(
+            exception = it as Exception,
+            message = "Error al actualizar al obtener al usuario por email: ${it.message}"
+        )
     }.getOrNull()
 
 

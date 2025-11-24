@@ -37,21 +37,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MemberDetailsViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
-@Preview
 @Composable
-fun MemberDetailsScreen(member: MembersModel) {
-    Screen(member)
+fun MemberDetailsScreen(member: MembersModel, navController: NavHostController?) {
+    Screen(member, navController)
 }
 
 @Composable
-private fun Screen(member: MembersModel, viewModel: MemberDetailsViewModel = hiltViewModel()) {
+private fun Screen(
+    member: MembersModel,
+    navController: NavHostController?,
+    viewModel: MemberDetailsViewModel = hiltViewModel()
+) {
 
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -74,7 +81,25 @@ private fun Screen(member: MembersModel, viewModel: MemberDetailsViewModel = hil
             ContactInf(member)
 
             ActionButtonsRow(
-                onEditClick = {  },
+                onEditClick = {
+                    if (navController != null) {
+                        navController!!.let {
+                            // Gson con formato de fecha personalizado
+                            val gson = GsonBuilder()
+                                .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                                .create()
+
+                            // Convertir el objeto a JSON
+                            val memberJson = URLEncoder.encode(
+                                gson.toJson(member),
+                                StandardCharsets.UTF_8.toString()
+                            )
+
+                            // Navegar pasando el JSON
+                            it.navigate("MembersEditScreen/$memberJson")
+                        }
+                    }
+                },
                 onEmailClick = {
                     if (!member.email.isNullOrEmpty())
                         viewModel.sendEmail(context, member.email)
@@ -214,7 +239,15 @@ private fun ContactInf(member: MembersModel) {
         CardViewInfo(
             icon = R.drawable.calendar,
             title = "Fecha de Nacimiento",
-            value = "${UtilsFunctions().formatDateInSpanish(member.birthDay)}"
+            value = UtilsFunctions().formatDateInSpanish(member.birthDay)
+        )
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        CardViewInfo(
+            icon = R.drawable.calendar,
+            title = "Edad:",
+            value = "${UtilsFunctions().ageCalculated(member.birthDay)} años"
         )
 
         Spacer(modifier = Modifier.height(5.dp))

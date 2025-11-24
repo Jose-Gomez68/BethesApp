@@ -34,7 +34,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginResPasswordScreen
 import com.iglesiabethesda.bethesdapp.Login.ui.LoginScreen
@@ -48,6 +47,7 @@ import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
 import com.iglesiabethesda.bethesdapp.me.ui.view.MeScreen
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.view.MemberDetailsScreen
+import com.iglesiabethesda.bethesdapp.members.ui.view.MembersEditScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersRegisterScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersScreen
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
@@ -139,6 +139,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
     val showBackButton = currentRoute in listOf(
         Routes.MembersScreen.MembersRegisterScreen.route,
         Routes.MembersScreen.MemberDetailsScreen.route,
+        Routes.MembersScreen.MembersEditScreen.route,
         Routes.GroupsScreen.GroupRegisterScreen.route,
         Routes.EventsScreen.NewEventScreen.route
     )
@@ -233,12 +234,30 @@ fun NavigationGraph(
                 URLDecoder.decode(memberJson, StandardCharsets.UTF_8.toString()),
                 MembersModel::class.java
             )
-            MemberDetailsScreen(member)
+            MemberDetailsScreen(member, navController)
         }
         composable(
             Routes.MembersScreen.MembersRegisterScreen.route
         ) {
             MembersRegisterScreen(navController)
+        }
+        composable(
+            Routes.MembersScreen.MembersEditScreen.route,
+            arguments = listOf(
+                navArgument("memberJson") { type = NavType.StringType }
+            )
+        ) {backStackEntry ->
+            val memberJson = backStackEntry.arguments?.getString("memberJson")
+
+            val gson = GsonBuilder()
+                .setDateFormat("MMM dd, yyyy hh:mm:ss a")
+                .create()
+
+            val member = gson.fromJson(
+                URLDecoder.decode(memberJson, StandardCharsets.UTF_8.toString()),
+                MembersModel::class.java
+            )
+            MembersEditScreen(navController, member)
         }
         composable(Routes.GroupsScreen.route) { GroupScreen(navController) }
         composable(

@@ -11,6 +11,7 @@ sealed class Routes (val title: String, val icon: Int, val route: String) {
     object HomeScreen: Routes( "inicio", R.drawable.ic_home, "inicio" )
     object MembersScreen: Routes( "usuarios", R.drawable.ic_users, "usuarios" ) {
         object MembersRegisterScreen: Routes( "RegisterUser", R.drawable.ic_users, "RegistrarUsuario" )
+        object MembersEditScreen: Routes( "EditUser", R.drawable.ic_users, "MembersEditScreen/{memberJson}" )
         object MemberDetailsScreen: Routes( "Detalle del Persona", R.drawable.ic_users, "MemberDetailsScreen/{memberJson}" )
     }
     object EventsScreen: Routes( "eventos", R.drawable.ic_events, "eventos" ){

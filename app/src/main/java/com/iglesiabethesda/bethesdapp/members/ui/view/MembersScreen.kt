@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MembersViewModel
@@ -53,7 +54,6 @@ import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 firesbase
 * https://www.youtube.com/watch?v=hgLgedigea0*/
 
-@Preview
 @Composable
 fun MembersScreen(navController: NavHostController) {
     Screen(navController)
@@ -65,7 +65,9 @@ private fun Screen(
     viewModel: MembersViewModel = hiltViewModel()
 ) {
 
-    LaunchedEffect(Unit) {
+    val navBackStackEntry = navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(navBackStackEntry) {
         viewModel.getMember()
     }
     /*val searchQuery by remember {
