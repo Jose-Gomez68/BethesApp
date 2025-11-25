@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -27,7 +32,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
@@ -38,7 +42,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun UsersList(membersList: List<MembersModel>, navController: NavHostController?) {
+fun UsersListNoDelete(membersList: List<MembersModel>, navController: NavHostController?) {
     val userList = listOf(
         "Juan Pérez - M, 30",
         "María López - F, 25",
@@ -64,9 +68,39 @@ fun UsersList(membersList: List<MembersModel>, navController: NavHostController?
     }
 }
 
+/**
+ * AQUI USAMOS EL DELETE DESLIZABLE*/
+@Composable
+fun UsersList(
+    membersList: List<MembersModel>,
+    navController: NavHostController?,
+    onDelete: (MembersModel) -> Unit
+) {
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
+        items(
+            items = membersList,
+            key = { it.uid ?: it.hashCode() } //asegura que la clave sea unica
+        ) { member ->
+            SwipeableUserItem(
+                member = member,
+                navController = navController,
+                onDelete = onDelete
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun UserItem(member: MembersModel, navController: NavHostController?) {
+private fun UserItem(
+    member: MembersModel,
+    navController: NavHostController?
+) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -106,6 +140,48 @@ private fun UserItem(member: MembersModel, navController: NavHostController?) {
         UserDescrip(member)
     }
 
+}
+
+@Composable
+fun SwipeableUserItem(
+    member: MembersModel,
+    navController: NavHostController?,
+    onDelete: (MembersModel) -> Unit
+) {
+
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                onDelete(member)  // sólo abrir el diálogo
+            }
+            false // nunca confirmar el swipe
+        }
+    )
+
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false, // Solo derecha → izquierda
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Red),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_events),
+                    contentDescription = "Delete",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .padding(end = 20.dp)
+                )
+            }
+        }
+
+    ) {
+        UserItem(member = member, navController = navController)
+    }
 }
 
 @Composable

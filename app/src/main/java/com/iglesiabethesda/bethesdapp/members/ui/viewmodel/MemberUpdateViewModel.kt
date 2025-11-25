@@ -71,16 +71,6 @@ class MemberUpdateViewModel @Inject constructor(
 
 
     fun updateMember() {
-        println("Nombre: $memberName")
-        println("Apellido Paterno: $memberApPa")
-        println("Apellido Materno: $memberApMa")
-        println("Pasatiempo: $memberHobby")
-        println("Oficio: $memberJob")
-        println("Teléfono: $memberTel")
-        println("Emergencia: $memberEmergency")
-        println("Email: $memberEmail")
-        println("Fecha Nacimiento: $memberBirthDay")
-
         val member = MembersModel(memberUid,memberName,memberApPa,memberApMa, memberHobby, memberJob,
             memberTel, memberAddress, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 2,
             utilsFunctions.getCurrentDateTime(), utilsFunctions.getCurrentDateTime()

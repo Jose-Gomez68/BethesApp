@@ -3,7 +3,6 @@ package com.iglesiabethesda.bethesdapp.members.data.network
 import com.iglesiabethesda.bethesdapp.data.network.FirebaseClient
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModelFirebase
-import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -23,6 +22,7 @@ class NetworkMembersService @Inject constructor(
 
         return query.documents.mapNotNull { it.toObject(MembersModelFirebase::class.java)?.toModel() }
             .filter { it.uid != uidMember }
+            //.filter { it.statusAccount != 4 } //trae todos menos a los eliminados
     }
 
 }

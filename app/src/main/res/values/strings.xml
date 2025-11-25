@@ -16,6 +16,20 @@
     <string name="tv_descrip_new_event_error">Debe contener una descripción</string>
     <string name="tv_priority_new_event_error">Selecciona la prioridad</string>
     <string name="tv_date_new_event_error">Debes seleccionar una fecha</string>
+    <string name="title_alert_dialog_error_new_event">Error</string>
+    <string name="message_alert_dialog_error_new_event">Hubo un error al crear el evento, intente nuevamente.</string>
+    <string name="buttonpostiive_alert_dialog_error_new_event">Aceptar</string>
+
+    <!--MEMBER SCREEN-->
+    <string name="title_search_member_screen">Buscar Miembros</string>
+    <string name="title_fl_button1_member_screen">Nuevo usuario</string>
+    <string name="title_fl_button2_member_screen">Registrar Visita</string>
+    <string name="title_dialog_delete_member_screen">Eliminar miembro</string>
+    <string name="message_dialog_delete_member_screen">
+    ¿Deseas eliminar a %1$s?
+    </string>
+    <string name="title_buttonnegative_dialog_delete_member_screen">Cancelar</string>
+    <string name="title_buttonpositive_dialog_delete_member_screen">Eliminar</string>
 
     <!--REGISTER MEMBER-->
     <string name="msg_error_member_name">El nombre no puede ser vacio</string>
@@ -79,5 +93,9 @@
 
     <!--UTILS COMPOSE-->
     <string name="simple_alert_dialog_close_utils_compose">Cerrar</string>
+    <string name="simple_initials_avatar_name_utils_compose">Jose Armando Gomez Zamora</string>
+
+    <!--USER LIST SELECTED DIALOG-->
+    <string name="search_user_list_dialog">Buscar Miembros"</string>
 
 </resources>

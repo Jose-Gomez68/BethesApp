@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,6 +50,7 @@ import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MembersViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.LoadingDialog
+import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
 
 /*
 firesbase
@@ -81,6 +83,9 @@ private fun Screen(
     var searchQuery by remember {
         mutableStateOf("")
     }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var memberToDelete by remember { mutableStateOf<MembersModel?>(null) }
+
 
     val context = LocalContext.current
 
@@ -113,11 +118,41 @@ private fun Screen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            SearchFieldList(titleLabel = "Buscar Miembros",
+            SearchFieldList(titleLabel = stringResource(id = R.string.title_search_member_screen),
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersList(filteredMembers, navController)
+            UsersList(
+                filteredMembers,
+                navController,
+                onDelete = { member ->
+                    //viewModel.deleteMemberByUid(member.uid)
+                    memberToDelete = member
+                    showDeleteDialog = true
+                }
+            )
 
             LoadingDialog(showProgress)
+
+            if (showDeleteDialog) {
+                SimpleAlertDialog2(
+                    title = stringResource(id = R.string.title_dialog_delete_member_screen),
+                    message = stringResource(
+                        id = R.string.message_dialog_delete_member_screen,
+                        memberToDelete?.name ?: ""
+                    ),
+                    buttonNegativeText = stringResource(id = R.string.title_buttonnegative_dialog_delete_member_screen),
+                    buttonPositiveeText = stringResource(id = R.string.title_buttonpositive_dialog_delete_member_screen),
+                    onConfirm = {
+                        // Aquí sí eliminas
+                        viewModel.deleteMemberByUid(memberToDelete!!.uid)
+                        showDeleteDialog = false
+                        viewModel.getMember()
+                    },
+                    onDismiss = {
+                        showDeleteDialog = false
+                    }
+                )
+            }
+
         }
 
         MultiOptionFAB(navController)
@@ -178,7 +213,7 @@ fun MultiOptionFAB(navController: NavHostController) {
             ) {
                 FabOption(
                     icon = Icons.Filled.Person,
-                    text = "Nuevo usuario",
+                    text = stringResource(id = R.string.title_fl_button1_member_screen),
                     onClick = {
                         // Acción 1
                         expanded = false
@@ -188,7 +223,7 @@ fun MultiOptionFAB(navController: NavHostController) {
 
                 FabOption(
                     icon = Icons.Filled.AccountBox,
-                    text = "Registrar Visita",
+                    text = stringResource(id = R.string.title_fl_button2_member_screen),
                     onClick = {
                         // Acción 2
                         expanded = false

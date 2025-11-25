@@ -49,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,7 +69,6 @@ fun NewEventScreen(navController: NavController) {
     Screen(navController)
 }
 
-@Preview
 @Composable
 private fun Screen(
     navController: NavController,
@@ -101,9 +99,9 @@ private fun Screen(
                 }
             }else if(isShowError) {
                 SimpleAlertDialog(
-                    title = "Error",
-                    message = "Hubo un error al crear el evento, intente nuevamente.",
-                    buttonNegativeText = "Aceptar"
+                    title = stringResource(id = R.string.title_alert_dialog_error_new_event),
+                    message = stringResource(id = R.string.message_alert_dialog_error_new_event),
+                    buttonNegativeText = stringResource(id = R.string.buttonpostiive_alert_dialog_error_new_event)
                 ) { }
             }
 

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
+import com.iglesiabethesda.bethesdapp.members.domain.usecase.DeleteMemberUseCase
 import com.iglesiabethesda.bethesdapp.members.domain.usecase.GetMembersListUseCase
 import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MembersViewModel @Inject constructor(
     private val getMembersListUseCase: GetMembersListUseCase,
-    private val sharedPrf: SharedPreferencesConfig
+    private val sharedPrf: SharedPreferencesConfig,
+    private val deleteMemberUseCase: DeleteMemberUseCase
 ): ViewModel() {
 
     private val _getMembers = mutableStateOf<Result<List<MembersModel>>?>(null)
@@ -39,13 +41,13 @@ class MembersViewModel @Inject constructor(
     fun deleteMemberByUid(uid:String) {//me guie de EventsScreenViewModel
         viewModelScope.launch {
             _isLoading.value = true
-            //val result = deleteEventUseCase.invoke(uid)
-           /* result.onSuccess {
-                _getEventsDelete.value = false
+            val result = deleteMemberUseCase.invoke(uid)
+            result.onSuccess {
+                _getMembersDelete.value = false
             }.onFailure {
-                _getEventsDelete.value = true
+                _getMembersDelete.value = true
                 //si falla es true y muestra el mensaje de error
-            }*/
+            }
             _isLoading.value = false
         }
     }

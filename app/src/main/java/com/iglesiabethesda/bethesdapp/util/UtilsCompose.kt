@@ -51,7 +51,7 @@ fun GifImageLocal(@DrawableRes drawableId: Int, modifier: Modifier = Modifier) {
 
 @Composable
 fun InitialsAvatar(
-    fullName: String = "Jose Armando Gomez Zamora",
+    fullName: String = stringResource(id = R.string.simple_initials_avatar_name_utils_compose),
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color(0xFF6200EE),
     textColor: Color = Color.White,

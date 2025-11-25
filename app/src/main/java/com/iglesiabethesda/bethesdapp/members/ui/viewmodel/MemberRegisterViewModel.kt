@@ -57,15 +57,6 @@ class MemberRegisterViewModel @Inject constructor(
 
 
     fun registerMember() {
-        println("Nombre: $memberName")
-        println("Apellido Paterno: $memberApPa")
-        println("Apellido Materno: $memberApMa")
-        println("Pasatiempo: $memberHobby")
-        println("Oficio: $memberJob")
-        println("Teléfono: $memberTel")
-        println("Emergencia: $memberEmergency")
-        println("Email: $memberEmail")
-        println("Fecha Nacimiento: $memberBirthDay")
 
         val member = MembersModel("",memberName,memberApPa,memberApMa, memberHobby, memberJob,
             memberTel, memberAddress, memberEmergency, memberEmail,  utilsFunctions.parseDateFromStringBirthDay(memberBirthDay), 2,

@@ -145,6 +145,24 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         }
     }.isSuccess
 
+    suspend fun deleteMemberByUid(uid: String): Boolean = runCatching {
+        val collection = firebase.db.collection(MEMBER_COLLECTION)
+
+        // Buscar el documento con el UID especificado
+        val querySnapshot = collection
+            .whereEqualTo("uid", uid)
+            .get()
+            .await()
+
+        if (!querySnapshot.isEmpty) {
+            val document = querySnapshot.documents.first()
+            // Actualizar solo el campo "email"
+            document.reference.update("statusAccount", 4).await()
+        } else {
+            throw Exception("No se elimino un miembro con el UID: $uid")
+        }
+    }.isSuccess
+
     suspend fun updateMemberStatusAccountByUid(uid: String, statusAccount: Int): Boolean = runCatching {
         val collection = firebase.db.collection(MEMBER_COLLECTION)
 
