@@ -56,6 +56,10 @@ class LoginViewModel @Inject constructor(
     val showErrorNetworkDialog: LiveData<Boolean>
         get() = _showErrorNetworkDialog
 
+    private var _showDisableAccountDialog = MutableLiveData<Boolean>()
+    val showDisableAccountDialog: LiveData<Boolean>
+        get() = _showDisableAccountDialog
+
     private val _getUserModel = MutableLiveData<UserModel?>()
     val getUserModel: LiveData<UserModel?>
         get() = _getUserModel
@@ -96,6 +100,12 @@ class LoginViewModel @Inject constructor(
                 is LoginResult.NetworkError -> {
                     _showErrorNetworkDialog.value = true
                 }
+
+                is LoginResult.DisabledAccount -> {
+                    // Aquí controlas cuando Firebase authentication devuelve ERROR_USER_DISABLED
+                    _showDisableAccountDialog.value = true
+                }
+
             }
             _viewState.value = LoginViewState(isLoading = false)
         }
@@ -128,6 +138,10 @@ class LoginViewModel @Inject constructor(
 
     fun clearNetworkErrorDialog() {
         _showErrorNetworkDialog.value = false
+    }
+
+    fun clearDisnableDialog() {
+        _showDisableAccountDialog.value = false
     }
 
 }

@@ -78,6 +78,7 @@ private fun Screen(
     var password by remember { mutableStateOf("") }
     val showErrorDialog by viewModel.showErrorDialog.observeAsState()
     val showNetworkErrorDialog by viewModel.showErrorNetworkDialog.observeAsState(false)
+    val showDisabledDialog by viewModel.showDisableAccountDialog.observeAsState(false)
 
     val navigateToHome by viewModel.navigateToDetails.observeAsState()
     val navigateToVerifyAccount by viewModel.navigateToVerifyAccount.observeAsState()
@@ -176,6 +177,23 @@ private fun Screen(
             text = { Text("Verifique la conexción a internet") },
             confirmButton = {
                 Button(onClick = { viewModel.clearNetworkErrorDialog() }) {
+                    Text("Aceptar")
+                }
+            }
+        )
+    }
+
+    if (showDisabledDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                // Ocultar diálogo al cerrarlo
+                viewModel.clearNetworkErrorDialog()
+            },
+            title = { Text("Inhabilitado") },
+            text = { Text("Tu cuenta ha sido inhabilitada por el administrador. ponte" +
+                    "en contacto con el admin para mas información") },
+            confirmButton = {
+                Button(onClick = { viewModel.clearDisnableDialog() }) {
                     Text("Aceptar")
                 }
             }

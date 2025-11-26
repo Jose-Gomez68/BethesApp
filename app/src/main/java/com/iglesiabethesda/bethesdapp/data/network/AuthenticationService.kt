@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.iglesiabethesda.bethesdapp.data.response.LoginResult
 import kotlinx.coroutines.delay
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,6 +33,12 @@ class AuthenticationService @Inject constructor(private val firebase: FirebaseCl
         val user = result.user
         if (user != null) {
             LoginResult.Success(user.isEmailVerified)
+        } else {
+            LoginResult.Error
+        }
+    } catch (e: FirebaseAuthInvalidUserException) {
+        if (e.errorCode == "ERROR_USER_DISABLED") {
+            LoginResult.DisabledAccount // <- tú defines este estado
         } else {
             LoginResult.Error
         }

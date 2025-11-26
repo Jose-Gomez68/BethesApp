@@ -66,7 +66,13 @@ fun AppSplashScreen(navController: NavController, viewModel: AppSplashScreenView
                 }
             }
 
-            null -> { /* Loading... */ }
+            is LoginResult.DisabledAccount -> {
+                navController.navigate(Routes.LoginScreen.route) {
+                    popUpTo(Routes.SplashScreen.route) { inclusive = true }
+                }
+            }
+
+            else -> {}
         }
 
     }
