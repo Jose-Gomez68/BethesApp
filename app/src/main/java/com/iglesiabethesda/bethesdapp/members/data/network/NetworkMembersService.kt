@@ -22,7 +22,7 @@ class NetworkMembersService @Inject constructor(
 
         return query.documents.mapNotNull { it.toObject(MembersModelFirebase::class.java)?.toModel() }
             .filter { it.uid != uidMember }
-            //.filter { it.statusAccount != 4 } //trae todos menos a los eliminados
+            .filter { it.statusAccount != 4 } //trae todos menos a los eliminados
     }
 
 }
