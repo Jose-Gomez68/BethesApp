@@ -14,7 +14,12 @@ class NetworkMembersService @Inject constructor(
         const val MEMBERS_COLLECTION = "members"
     }
 
-    suspend fun getMembersList(uidMember: String?): List<MembersModel> {
+    /**OBTIENE A TODO LOS MIEBROS
+     * EXCEPTO AL DE LA SESION QUE
+     * ESTA INICIADA, SI ENVIA EL
+     * UID TRAE A TODOS MENOS A ESE UID
+     * SI MANDAS NULL TRAE A TODOS*/
+    suspend fun getAllMembersListExceptionByUid(uidMember: String?): List<MembersModel> {
         val query = firebase.db.collection(MEMBERS_COLLECTION)
             .orderBy("name") //ordena alfabeticamente
             .get()

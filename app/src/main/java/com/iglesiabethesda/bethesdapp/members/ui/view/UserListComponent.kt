@@ -42,7 +42,11 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun UsersListNoDelete(membersList: List<MembersModel>, navController: NavHostController?) {
+fun UsersListNoDelete(
+    membersList: List<MembersModel>,
+    navController: NavHostController? = null,
+    onClick: ((MembersModel) -> Unit)? = null
+) {
     val userList = listOf(
         "Juan Pérez - M, 30",
         "María López - F, 25",
@@ -63,7 +67,7 @@ fun UsersListNoDelete(membersList: List<MembersModel>, navController: NavHostCon
             .padding(8.dp)
     ) {
         items(membersList) { member ->
-            UserItem(member, navController)
+            UserItem(member, navController, onClick)
         }
     }
 }
@@ -99,7 +103,8 @@ fun UsersList(
 @Composable
 private fun UserItem(
     member: MembersModel,
-    navController: NavHostController?
+    navController: NavHostController?,
+    onClick: ((MembersModel) -> Unit)? = null
 ) {
     val context = LocalContext.current
     Row(
@@ -126,6 +131,10 @@ private fun UserItem(
 
                             // Navegar pasando el JSON
                             it.navigate("MemberDetailsScreen/$memberJson")
+                        }
+                    }else {
+                        if (onClick != null) {
+                            onClick(member)  // 🔥 devolución al padre
                         }
                     }
                 },
@@ -180,7 +189,7 @@ fun SwipeableUserItem(
         }
 
     ) {
-        UserItem(member = member, navController = navController)
+        UserItem(member = member, navController = navController, onClick = null)
     }
 }
 

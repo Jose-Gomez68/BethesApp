@@ -263,7 +263,7 @@ fun NavigationGraph(
         composable(
             route = Routes.GroupsScreen.GroupRegisterScreen.route
         ) {
-            GroupRegisterScreen()
+            GroupRegisterScreen(navController)
         }
         composable(Routes.EventsScreen.route) { EventScreen(navController = navController) }
         composable(Routes.EventsScreen.NewEventScreen.route) { NewEventScreen(navController) }

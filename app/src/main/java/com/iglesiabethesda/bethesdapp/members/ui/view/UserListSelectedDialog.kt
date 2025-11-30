@@ -35,13 +35,25 @@ import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 
 @Composable
-fun UserListSelectedDialogScreen(show: Boolean, membersList: List<MembersModel>, onDismiss: () -> Unit) {
-    Screen(show, membersList, onDismiss)
+fun UserListSelectedDialogScreen(
+    show: Boolean,
+    membersList: List<MembersModel>,
+    selectedMembers: List<MembersModel>, // 🔥 ya seleccionados
+    onDismiss: () -> Unit,
+    onMemberSelected: (MembersModel) -> Unit // 🔥 callback
+) {
+    Screen(show, membersList, selectedMembers,onDismiss, onMemberSelected)
 }
 
 
 @Composable
-private fun Screen(show: Boolean, membersList: List<MembersModel>, onDismiss: () -> Unit) {
+private fun Screen(
+    show: Boolean,
+    membersList: List<MembersModel>,
+    selectedMembers: List<MembersModel>,    // 🔥 agregar este si quieres ocultar seleccionados
+    onDismiss: () -> Unit,
+    onMemberSelected: (MembersModel) -> Unit
+) {
 
     if (show) {
         Dialog(
@@ -51,20 +63,28 @@ private fun Screen(show: Boolean, membersList: List<MembersModel>, onDismiss: ()
                 dismissOnClickOutside = true
             )
         ) {
-            ScreenDialog(membersList)
+            ScreenDialog(
+                membersList = membersList,
+                selectedMembers = selectedMembers,
+                onMemberSelected = onMemberSelected
+            )
         }
     }
 
 }
 
 @Composable
-private fun ScreenDialog(membersList: List<MembersModel>) {
+private fun ScreenDialog(
+    membersList: List<MembersModel>,
+    selectedMembers: List<MembersModel>,
+    onMemberSelected: (MembersModel) -> Unit
+) {
 
     var searchQuery by remember {
         mutableStateOf("")
     }
 
-    val filteredMembers = if (searchQuery.isNotBlank()) {
+    /*val filteredMembers = if (searchQuery.isNotBlank()) {
         membersList.filter { member ->
             // Aquí defines los campos donde buscar
             member.name.contains(searchQuery, ignoreCase = true) ||
@@ -73,7 +93,18 @@ private fun ScreenDialog(membersList: List<MembersModel>) {
         }
     } else {
         membersList
-    }
+    }*/
+
+    val filteredMembers = membersList
+        .filter { it.uid !in selectedMembers.map { s -> s.uid } } // ⛔ ocultar los ya elegidos
+        .filter { member ->
+            if (searchQuery.isBlank()) true
+            else {
+                member.name.contains(searchQuery, ignoreCase = true) ||
+                        member.apPaterno.contains(searchQuery, ignoreCase = true) ||
+                        member.apMaterno.contains(searchQuery, ignoreCase = true)
+            }
+        }
 
     Box(
         modifier = Modifier
@@ -91,7 +122,13 @@ private fun ScreenDialog(membersList: List<MembersModel>) {
         ){
             SearchFieldList(titleLabel = stringResource(id = R.string.search_user_list_dialog),
                 searchQuery = searchQuery, onSearchChanged = { searchQuery = it } )
-            UsersListNoDelete(filteredMembers, null)
+            //UsersListNoDelete(filteredMembers, null)
+            UsersListNoDelete(
+                membersList = filteredMembers,
+                onClick = { member ->
+                    onMemberSelected(member)
+                }
+            )
         }
     }
 }

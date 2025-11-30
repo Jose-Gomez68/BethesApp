@@ -1,7 +1,5 @@
 package com.iglesiabethesda.bethesdapp.group.ui.view
 
-import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,27 +43,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.R
-import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.NewEventScreenViewModel
 import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupRegisterViewModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.view.UserListSelectedDialogScreen
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.util.LoadingDialog
+import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
+import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 
 @Composable
-fun GroupRegisterScreen() {
-    Screen()
+fun GroupRegisterScreen(navController: NavController) {
+    Screen(navController)
 }
 
 
 @Composable
-private fun Screen(viewModel: GroupRegisterViewModel = hiltViewModel()) {
+private fun Screen(navController: NavController,viewModel: GroupRegisterViewModel = hiltViewModel()) {
+
+    val showDialog by viewModel.isLoading
+    val isGroupCreated by viewModel::isGroupCreated
+    val isShowError by viewModel::showErrorDialog
+    val isShowErrorInternet by viewModel::showErrorDialogInternet
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -78,7 +86,36 @@ private fun Screen(viewModel: GroupRegisterViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             FormRegister(viewModel)
+
+             if (isGroupCreated) {
+                 LaunchedEffect(Unit) {
+                     navController.popBackStack()
+                 }
+             }else if(isShowError) {
+                 SimpleAlertDialog(
+                     title = "Error",
+                     message = "Hubo un error al crear el grupo, intente nuevamente.",
+                     buttonNegativeText = "Aceptar"
+                 ) {
+                     viewModel.resetShowErrorDialog()
+                     navController.popBackStack()
+                 }
+             }else if(isShowErrorInternet) {
+                 SimpleAlertDialog(
+                     title = "Error Conexion",
+                     message = "Hubo un error de conexcion. Verifica tu Internet" +
+                             "al conectar nuevamente regrese a esta ventana y despues vuelva al listado " +
+                             "paara verificar que se creo el grupo automaticamente.",
+                     buttonNegativeText = "Aceptar"
+                 ) {
+                     viewModel.resetShowErrorDialogInternet()
+                     navController.popBackStack()
+                 }
+             }
+
         }
+
+        LoadingDialog(showDialog)
 
     }
 }
@@ -87,9 +124,9 @@ private fun Screen(viewModel: GroupRegisterViewModel = hiltViewModel()) {
 @Composable
 private fun FormRegister(viewModel: GroupRegisterViewModel) {
 
-    var etGroupName by remember { mutableStateOf("") }
-    var etGroupDescrip by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
+    val selectedMembers = remember { mutableStateListOf<MembersModel>() }
+
     LaunchedEffect(Unit) {
         viewModel.getMember()
     }
@@ -115,8 +152,8 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
         val containerColor = Color(0xFFF5F5F5)
         OutlinedTextField(
-            value = etGroupDescrip,
-            onValueChange = { etGroupDescrip = it },
+            value = viewModel.name,
+            onValueChange = { viewModel.name = it },
             label = { Text("Ingresa el Nombre") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier.fillMaxWidth(),
@@ -129,6 +166,16 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
             )
         )
 
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.nameError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -140,9 +187,9 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
         Spacer(modifier = Modifier.height(8.dp))
         val containerColor1 = Color(0xFFF5F5F5)
         OutlinedTextField(
-            value = etGroupName,
-            onValueChange = { etGroupName = it },
-            label = { Text("Ingresa el Nombre") }, // Label flotante
+            value = viewModel.descrip,
+            onValueChange = { viewModel.descrip = it },
+            label = { Text("Ingresa una descripción") }, // Label flotante
             shape = RoundedCornerShape(12.dp), // Bordes redondeados
             modifier = Modifier
                 .fillMaxWidth()
@@ -157,6 +204,16 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
                 unfocusedBorderColor = Color.Transparent, // Color del borde cuando no está seleccionado
             )
         )
+
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.descripError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -188,12 +245,31 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        UserGroupList()
+        UserGroupList(
+            selectedMembers,
+            onDelete = { uid ->
+                selectedMembers.removeIf{ it.uid == uid }
+            }
+        )
+
+        Spacer(modifier = Modifier.height(3.dp))
+        viewModel.listMembersError?.let { error ->
+            Text(
+                text = error,
+                color = Color.Red,
+                style = typography.bodySmall,
+                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = { /* Acción al presionar el botón */ },
+            onClick = {
+                if(viewModel.validateForm())
+                    viewModel.groupRegister()
+            },
             modifier = Modifier
-                .fillMaxWidth() // Hace que el botón ocupe todo el ancho disponible
+                .fillMaxWidth() // Hace que el botón ocupe tod el ancho disponible
                 .height(50.dp), // Altura personalizada
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF197FE6), // Color de fondo #197FE6
@@ -208,82 +284,90 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
         }
     }
 
-    if (showDialog) {
+    /*if (showDialog) {
         UserListSelectedDialogScreen(showDialog, members,
             onDismiss = { showDialog = false } // Cerrar el diálogo al presionar fuera
         )
+    }*/
+    if (showDialog) {
+        UserListSelectedDialogScreen(
+            show = showDialog,
+            membersList = members,
+            selectedMembers = selectedMembers,   // 🔥 Para ocultarlos en el dialogo
+            onDismiss = { showDialog = false },
+            onMemberSelected = { member ->
+                selectedMembers.add(member)   // 🔥 Agregar seleccionado
+                viewModel.listMembers.clear()
+                viewModel.listMembers.addAll(selectedMembers)
+                showDialog = false
+            }
+        )
     }
+
 
 }
 
 @Composable
-private fun UserGroupList() {
-    val userList = listOf(
-        "Juan Pérez - M, 30",
-        "María López - F, 25",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35"
-    )
+private fun UserGroupList(membersList: List<MembersModel>, onDelete: (String) -> Unit) {
 
-    if (userList.isNotEmpty()) {
+    if (membersList.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(0.7f)
-                .padding(start = 25.dp),
+                .fillMaxWidth()
+                .fillMaxHeight(0.7f),
+                //.padding(start = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(userList) { user ->
-                UserItem(user)
+            items(membersList) { user ->
+                UserItem(
+                    user,
+                    onDelete = {
+                        onDelete(user.uid)
+                    }
+                )
             }
         }
     }
 }
 
-
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun UserItem(user: String) {
-    val context = LocalContext.current
+private fun UserItem(member: MembersModel, onDelete:() -> Unit) {
     Row(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(backgroundColorApp)
-            .padding(8.dp)
+            .padding(6.dp)
             .border(2.dp, Color.Transparent, RoundedCornerShape(15.dp)) // Borde redondeado
             .clip(RoundedCornerShape(11.dp))
             .combinedClickable(
                 onClick = {
-                    Toast.makeText(context, "Click en ${user}", Toast.LENGTH_SHORT).show()
+
                 },
                 onLongClick = {
-                    Toast.makeText(context, "Long Click ", Toast.LENGTH_SHORT).show()
+
                 }
-            )
+            ),
+        verticalAlignment = Alignment.CenterVertically
 
     ) {
         UserImage(imageUser = 1)
-        UserDescrip(user)
+        UserDescrip(member)
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
-            onClick = { /* Acción para seleccionar usuario */ },
+            onClick = {
+                onDelete()
+            },
             modifier = Modifier
-                .size(48.dp) // Tamaño del botón
+                .size(40.dp) // Tamaño del botón
                 .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
                 .background(Color.Red) // Fondo gris claro
+                .align(Alignment.CenterVertically)
         ) {
             Icon(
                 imageVector = Icons.Default.Delete, // Icono de usuario
                 contentDescription = "Eliminar usuario",
-                tint = Color.Black // Color gris para mantenerlo minimalista
+                tint = Color.Black, // Color gris para mantenerlo minimalista
+                modifier = Modifier.padding(end = 3.dp)
             )
         }
     }
@@ -292,34 +376,40 @@ private fun UserItem(user: String) {
 
 @Composable
 private fun UserImage(imageUser: Int?) {
-    Image(
-        painter = painterResource(id = R.drawable.ic_launcher_foreground),
-        contentDescription = "Imagen del Usuario",
+    Box(
         modifier = Modifier
-            .size(64.dp)
+            .size(48.dp) // Tamaño del círculo
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary)
-    )
+            .background(MaterialTheme.colorScheme.primary),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.user_identity),
+            contentDescription = "Imagen del Usuario",
+            modifier = Modifier.size(25.dp) // Tamaño del ícono dentro del círculo
+        )
+    }
 }
 
+
 @Composable
-private fun UserDescrip(user: String) {
+private fun UserDescrip(member: MembersModel, modifier: Modifier = Modifier) {
 
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 8.dp, top = 10.dp),
         verticalArrangement = Arrangement.Center,
 
         ) {
         Text(
-            text = "Nombre del Usuario", // Aquí pones el nombre del usuario
+            text = "${member.name} ${member.apPaterno} ${member.apMaterno}", // Aquí pones el nombre del usuario
             style = typography.bodyLarge,
             color = Color.Black
         )
 
         Text(
-            text = "Sexo: M, Edad: 25", // Aquí pones el sexo y edad
+            text = "Sexo: M, Edad: ${UtilsFunctions().ageCalculated(member.birthDay)}", // Aquí pones el sexo y edad
             style = typography.bodySmall.copy(fontSize = 12.sp), // Tamaño más pequeño
             color = Color.Gray
         )
