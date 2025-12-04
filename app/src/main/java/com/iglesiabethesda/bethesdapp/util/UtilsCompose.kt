@@ -2,8 +2,12 @@ package com.iglesiabethesda.bethesdapp.util
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +34,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.util.models.DialogOption
 
 @Composable
 fun GifImageLocal(@DrawableRes drawableId: Int, modifier: Modifier = Modifier) {
@@ -155,3 +160,38 @@ fun LoadingDialog(isLoading: Boolean) {
         }
     }
 }
+
+//para opciones del listado
+@Composable
+fun OptionsDialog(
+    show: Boolean,
+    onDismiss: () -> Unit,
+    title: String,
+    options: List<DialogOption>
+) {
+    if (!show) return
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            Column {
+                options.forEach { option ->
+                    Text(
+                        text = option.label,
+                        color = option.color,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp)
+                            .clickable {
+                                onDismiss()
+                                option.onClick()
+                            }
+                    )
+                }
+            }
+        },
+        confirmButton = {}
+    )
+}
+

@@ -1,11 +1,8 @@
 package com.iglesiabethesda.bethesdapp.group.data.network
 
 import com.iglesiabethesda.bethesdapp.data.network.FirebaseClient
-import com.iglesiabethesda.bethesdapp.data.network.UserService.Companion.MEMBER_COLLECTION
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModelFirebase
-import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
-import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -49,5 +46,18 @@ class NetworkGroupService @Inject constructor(
         return query.documents.mapNotNull { it.toObject(GroupModelFirebase::class.java)?.toModel() }
             .filter { it.statusGroup != 3 }//trae todos menos a los eliminados
     }
+
+    suspend fun deleteGroup(uid: String): Boolean {
+        return try {
+            firebase.db.collection(GROUP_COLLECTION)
+                .document(uid)
+                .delete()
+                .await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 
 }
