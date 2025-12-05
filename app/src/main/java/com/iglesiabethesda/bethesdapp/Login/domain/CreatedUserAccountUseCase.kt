@@ -1,6 +1,5 @@
 package com.iglesiabethesda.bethesdapp.Login.domain
 
-import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.CreateUserAccountModel
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
 import com.iglesiabethesda.bethesdapp.data.network.AuthenticationService
@@ -13,9 +12,14 @@ class CreatedUserAccountUseCase @Inject constructor(
     private val userService: UserService
 ){
 
-    suspend operator fun invoke(userAccount: CreateUserAccountModel): Boolean {
+    suspend operator fun invoke(userAccount: CreateUserAccountModel): Boolean? {
         var result = false
         val getMemberRegisters = userService.getMemberByMemberCode(userAccount.memberCode)
+        val getUserByUidMember = userService.getUserByUidMember(getMemberRegisters!!.uid)
+        if (getUserByUidMember != null) {
+            // Ya existe un usuario → NO crear cuenta ni registrar
+            return null
+        }
         val accountCreated =  authenticationService.createAccount(userAccount.email, userAccount.password,
             "${getMemberRegisters!!.name} ${getMemberRegisters.apPaterno} ${getMemberRegisters.apMaterno}") != null
 

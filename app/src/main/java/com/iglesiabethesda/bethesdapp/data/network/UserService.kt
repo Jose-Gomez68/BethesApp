@@ -1,5 +1,6 @@
 package com.iglesiabethesda.bethesdapp.data.network
 
+import android.util.Log
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModel
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserModelFirebase
 import com.iglesiabethesda.bethesdapp.Login.ui.model.UserSignIn
@@ -109,7 +110,7 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         val queryGetMember = firebase
             .db
             .collection(MEMBER_COLLECTION)
-            .whereEqualTo("membersCode", memberCode)
+            .whereEqualTo("memberCode", memberCode)
             .get()
             .await()
 
@@ -242,5 +243,26 @@ class UserService @Inject constructor(private val firebase: FirebaseClient) {
         )
     }.getOrNull()
 
+    suspend fun getUserByUidMember(uidMember: String): UserModel? = runCatching {
+
+        val query = firebase
+            .db
+            .collection(USER_COLLECTION)
+            .whereEqualTo("uidMember", uidMember)
+            .get()
+            .await()
+
+        if (!query.isEmpty) {
+            val document = query.documents[0]
+            document.toObject(UserModelFirebase::class.java)?.toModel()
+        } else {
+            null
+        }
+    }.onFailure {
+        crashLytics(
+            exception = it as Exception,
+            message = "Error get user by uidMember: ${it.message}"
+        )
+    }.getOrNull()
 
 }

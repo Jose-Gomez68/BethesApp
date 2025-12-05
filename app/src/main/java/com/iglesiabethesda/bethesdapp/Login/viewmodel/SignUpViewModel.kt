@@ -1,6 +1,5 @@
 package com.iglesiabethesda.bethesdapp.Login.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,6 +29,9 @@ class SignUpViewModel @Inject constructor(
     var isUserCreated by mutableStateOf(false)
         private set
 
+    var isUserExist by mutableStateOf(false)
+        private set
+
 
     fun registerUserAccount() {
 
@@ -42,13 +44,26 @@ class SignUpViewModel @Inject constructor(
 
         viewModelScope.launch {
             val create = createdUserAccountUseCase(user)
-            if (create) {
+           /* if (create) {
                 Log.e("EXITO SE CREO","CHINGON")
                 isUserCreated = true
             }else{
                 Log.e("ERROOORRRR","NOO LA POLITZIA")
                 isUserCreated = false
+            }*/
+            when (create) {
+                true -> {
+                    isUserCreated = true
+                }
+                false -> {
+                    isUserCreated = false
+                }
+                null -> {
+                    isUserExist = true
+                    // Aquí puedes agregar un flag o mensaje especial
+                }
             }
+
         }
 
     }
@@ -84,6 +99,8 @@ class SignUpViewModel @Inject constructor(
         return isValid
     }
 
-
+    fun resetIsExistUser() {
+        isUserExist = false
+    }
 
 }
