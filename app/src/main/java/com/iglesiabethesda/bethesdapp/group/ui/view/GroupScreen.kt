@@ -1,11 +1,9 @@
 package com.iglesiabethesda.bethesdapp.group.ui.view
 
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,14 +20,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +51,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupScreenViewModel
-import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
@@ -76,9 +75,6 @@ private fun Screen(
         viewModel.getGroups()
     }
 
-    /*var searchQuery by remember {
-        mutableStateOf("")
-    }*/
 
     val groupsResult by viewModel.getGroups
     val showProgress by viewModel.isLoading
@@ -92,10 +88,8 @@ private fun Screen(
     }
 
     groupsResult?.onSuccess { group ->
-        if (group.isNotEmpty()){
             groups.clear()
             groups.addAll(group)
-        }
     }
 
     val filteredGroups = if (searchQuery.isNotBlank()) {
@@ -140,9 +134,9 @@ private fun Screen(
                             groups.remove(groupToDelete)
                         }
                         viewModel.deleteGroupByUid(deleteGroup!!.uid)
+                        viewModel.getGroups()
                         //remover con viewmodel y queda
                         showDeleteDialog = false
-                        viewModel.getGroups()
                     },
                     onDismiss = {
                         showDeleteDialog = false
@@ -181,30 +175,71 @@ private fun Screen(
 
 
 @Composable
+fun SwipeableUserItem(
+    group: GroupModel,
+    groupSize: Int,
+    onDelete: (GroupModel) -> Unit
+) {
+
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                onDelete(group)  // sólo abrir el diálogo
+            }
+            false // nunca confirmar el swipe
+        }
+    )
+
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false, // Solo derecha → izquierda
+        backgroundContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Red),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.basura_100),
+                    contentDescription = "Delete",
+                    modifier = Modifier
+                        .size(45.dp)
+                        .padding(end = 20.dp)
+                )
+            }
+        }
+
+    ) {
+
+        GroupItem(
+            group,
+            groupSize,
+        )
+
+    }
+}
+
+@Composable
 fun GroupList(groups: List<GroupModel>, onDelete: (GroupModel) -> Unit) {
 
-
-    val userList = listOf(
-        "Grupo de alabanza - M, 30",
-        "Grupo de Cocina - F, 25",
-        "Grupo de predica  - M, 35",
-        "Grupo de algo - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35",
-        "Carlos García - M, 35"
-    )
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        items(groups) { group ->
-            GroupItem(
+        items(
+            items = groups,
+            key = { it.uid ?: it.hashCode() }
+        ) { group ->
+            SwipeableUserItem(
+                group,
+                groups.size,
+                onDelete
+            )
+            /*GroupItem(
                 group,
                 groups.size,
                 onEdit = { item ->
@@ -213,19 +248,16 @@ fun GroupList(groups: List<GroupModel>, onDelete: (GroupModel) -> Unit) {
                 onDelete = { item ->
                     onDelete(item)
                 }
-            )
+            )*/
         }
     }
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun GroupItem(
     group: GroupModel,
     groupSize: Int,
-    onEdit: (GroupModel) -> Unit = {},
-    onDelete: (GroupModel) -> Unit = {}
 ) {
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
@@ -233,15 +265,17 @@ private fun GroupItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .background(backgroundColorApp)
             .border(2.dp, Color.Transparent, RoundedCornerShape(15.dp))
             .clip(RoundedCornerShape(11.dp))
+            .padding(top = 8.dp)
             .combinedClickable(
                 onClick = {
                     Toast.makeText(context, "Click en ${group.name}", Toast.LENGTH_SHORT).show()
                 },
                 onLongClick = {
-                    showMenu = true
+                    //menu de opciones
+                    //showMenu = true
                 }
             ),
         verticalAlignment = Alignment.CenterVertically
@@ -250,7 +284,7 @@ private fun GroupItem(
         GroupDescrip(group, groupSize)
     }
 
-    if (showMenu) {
+    /*if (showMenu) {
         AlertDialog(
             onDismissRequest = { showMenu = false },
             title = { Text("Opciones del grupo") },
@@ -281,7 +315,7 @@ private fun GroupItem(
             },
             confirmButton = {}
         )
-    }
+    }*/
 }
 
 @Composable

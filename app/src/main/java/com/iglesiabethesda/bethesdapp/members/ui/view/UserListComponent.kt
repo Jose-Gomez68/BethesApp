@@ -179,10 +179,10 @@ fun SwipeableUserItem(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_events),
+                    painter = painterResource(id = R.drawable.basura_100),
                     contentDescription = "Delete",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(45.dp)
                         .padding(end = 20.dp)
                 )
             }

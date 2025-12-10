@@ -162,6 +162,8 @@ fun LoadingDialog(isLoading: Boolean) {
 }
 
 //para opciones del listado
+//es para un menu de opciones,
+//como cuando mantienes precionado y te aprecen opciones un listado
 @Composable
 fun OptionsDialog(
     show: Boolean,
