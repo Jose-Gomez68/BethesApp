@@ -3,6 +3,9 @@ package com.iglesiabethesda.bethesdapp.members.data.network
 import com.iglesiabethesda.bethesdapp.data.network.FirebaseClient
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModelFirebase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -29,5 +32,28 @@ class NetworkMembersService @Inject constructor(
             .filter { it.uid != uidMember }
             .filter { it.statusAccount != 4 } //trae todos menos a los eliminados
     }
+
+    suspend fun getMembersListByUid(
+        uidList: List<String>
+    ): List<MembersModel> = coroutineScope {
+
+        if (uidList.isEmpty()) return@coroutineScope emptyList()
+
+        uidList.map { uid ->
+            async {
+                firebase.db
+                    .collection(MEMBERS_COLLECTION)
+                    .document(uid)
+                    .get()
+                    .await()
+            }
+        }.awaitAll()
+            .mapNotNull { snapshot ->
+                snapshot.toObject(MembersModelFirebase::class.java)?.toModel()
+            }
+            .filter { it.statusAccount != 4 }
+            .sortedBy { it.name }
+    }
+
 
 }

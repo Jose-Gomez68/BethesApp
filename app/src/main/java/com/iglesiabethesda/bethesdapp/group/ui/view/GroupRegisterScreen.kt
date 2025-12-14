@@ -195,7 +195,7 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
                 .fillMaxWidth()
                 .heightIn(min = 150.dp),
             maxLines = 5,
-            singleLine = true,
+            singleLine = false,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = containerColor1,
                 unfocusedContainerColor = containerColor1,

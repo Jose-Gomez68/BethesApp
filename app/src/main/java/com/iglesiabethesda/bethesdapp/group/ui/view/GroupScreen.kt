@@ -43,11 +43,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupScreenViewModel
@@ -55,6 +57,8 @@ import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun GroupScreen(navController: NavHostController) {
@@ -119,6 +123,19 @@ private fun Screen(
                 onDelete = { item ->
                     deleteGroup = item
                     showDeleteDialog = true
+                },
+                onClick = {
+                    // Gson con formato de fecha personalizado
+                    val gson = GsonBuilder()
+                        .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                        .create()
+
+                    // Convertir el objeto a JSON
+                    val groupJson = URLEncoder.encode(
+                        gson.toJson(it),
+                        StandardCharsets.UTF_8.toString()
+                    )
+                    navController.navigate("DetailsGrupo/${groupJson}")
                 }
             )
 
@@ -178,7 +195,8 @@ private fun Screen(
 fun SwipeableUserItem(
     group: GroupModel,
     groupSize: Int,
-    onDelete: (GroupModel) -> Unit
+    onDelete: (GroupModel) -> Unit,
+    onClick: (GroupModel) -> Unit
 ) {
 
     val dismissState = rememberSwipeToDismissBoxState(
@@ -216,13 +234,20 @@ fun SwipeableUserItem(
         GroupItem(
             group,
             groupSize,
+            onClick = { it ->
+                onClick(it)
+            }
         )
 
     }
 }
 
 @Composable
-fun GroupList(groups: List<GroupModel>, onDelete: (GroupModel) -> Unit) {
+fun GroupList(
+    groups: List<GroupModel>,
+    onDelete: (GroupModel) -> Unit,
+    onClick: (GroupModel) -> Unit
+) {
 
 
     LazyColumn(
@@ -237,7 +262,10 @@ fun GroupList(groups: List<GroupModel>, onDelete: (GroupModel) -> Unit) {
             SwipeableUserItem(
                 group,
                 groups.size,
-                onDelete
+                onDelete,
+                onClick = {
+                    onClick(it)
+                }
             )
             /*GroupItem(
                 group,
@@ -258,6 +286,7 @@ fun GroupList(groups: List<GroupModel>, onDelete: (GroupModel) -> Unit) {
 private fun GroupItem(
     group: GroupModel,
     groupSize: Int,
+    onClick: (GroupModel) -> Unit
 ) {
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
@@ -271,7 +300,8 @@ private fun GroupItem(
             .padding(top = 8.dp)
             .combinedClickable(
                 onClick = {
-                    Toast.makeText(context, "Click en ${group.name}", Toast.LENGTH_SHORT).show()
+                    onClick(group)
+                    //Toast.makeText(context, "Click en ${group.name}", Toast.LENGTH_SHORT).show()
                 },
                 onLongClick = {
                     //menu de opciones
@@ -361,7 +391,9 @@ private fun GroupDescrip(group: GroupModel, groupSize: Int) {
         Text(
             text = group.description,
             style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-            color = Color.Gray
+            color = Color.Gray,
+            maxLines = 1,                     // líneas visibles
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
