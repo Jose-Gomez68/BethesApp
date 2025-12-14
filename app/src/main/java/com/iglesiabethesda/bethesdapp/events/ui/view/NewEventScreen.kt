@@ -137,7 +137,7 @@ private fun FormText(viewModel: NewEventScreenViewModel) {
             color = Color.Black,          // Color de la letra
             fontWeight = FontWeight.Bold   // Peso de la letra (gordita)
         ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = containerColor,
             unfocusedContainerColor = containerColor,
@@ -177,7 +177,7 @@ private fun FormText(viewModel: NewEventScreenViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = containerColor,
             unfocusedContainerColor = containerColor,
@@ -316,7 +316,7 @@ private fun FormText(viewModel: NewEventScreenViewModel) {
     }
 
     if (showDatePcikerModal) {
-        showDatePickerDialog(
+        ShowDatePickerDialog(
             onDateSelected = {
 
                 showDatePcikerModal = false
@@ -387,7 +387,7 @@ fun CustomPriorityRadioGroup(
 }
 
 @Composable
-fun showDatePickerDialog(
+private fun ShowDatePickerDialog(
     onDateSelected: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
