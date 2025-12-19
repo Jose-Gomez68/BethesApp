@@ -6,10 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.usecase.GetMembersListByUIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,8 +28,10 @@ class GroupDetailsViewModel @Inject constructor(
     var groupUid by mutableStateOf("")
     var groupName by mutableStateOf("")
     var descrip by mutableStateOf("")
-    var statusGroup by mutableStateOf("")
-    var mm by mutableStateOf("")
+    var statusGroup by mutableStateOf(0)
+    var listMember by mutableStateOf(0)
+    var createdDate by mutableStateOf(Date())
+    var endDate by mutableStateOf<Date?>(null)
 
     fun getMember(list: List<String>) {
         viewModelScope.launch {
@@ -37,6 +41,16 @@ class GroupDetailsViewModel @Inject constructor(
 
             _isLoading.value = false
         }
+    }
+
+    fun loadGroup(group: GroupModel) {
+        groupUid = group.uid
+        groupName = group.name
+        descrip = group.description
+        statusGroup = group.statusGroup
+        listMember = group.listMembers.size
+        createdDate = group.createdDate
+        endDate = group.endDate
     }
 
 }

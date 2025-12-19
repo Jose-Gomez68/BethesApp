@@ -98,4 +98,13 @@
     <!--USER LIST SELECTED DIALOG-->
     <string name="search_user_list_dialog">Buscar Miembros"</string>
 
+    <!--GROUPS DETAIL-->
+    <string name="group_detail_status_text">Activo"</string>
+    <string name="group_detail_status_text2">Desactivado"</string>
+    <string name="group_detail_status_text3">Finalizado"</string>
+    <string name="group_detail_created_date">Creado el "</string>
+    <string name="group_detail_end_date">Cerrado el "</string>
+    <string name="group_detail_end_date2">En curso "</string>
+
+
 </resources>
