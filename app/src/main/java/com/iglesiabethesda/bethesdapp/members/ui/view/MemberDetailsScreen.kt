@@ -43,6 +43,7 @@ import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MemberDetailsViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
 import com.iglesiabethesda.bethesdapp.util.InitialsAvatar
 import com.iglesiabethesda.bethesdapp.util.UtilsFunctions
 import java.net.URLEncoder
@@ -81,6 +82,7 @@ private fun Screen(
             ContactInf(member)
 
             ActionButtonsRow(
+                viewModel,
                 onEditClick = {
                     if (navController != null) {
                         navController!!.let {
@@ -308,6 +310,7 @@ private fun CardViewInfo(
 
 @Composable
 private fun ActionButtonsRow(
+    viewModel: MemberDetailsViewModel,
     onEditClick: () -> Unit,
     onEmailClick: () -> Unit,
     onWhatsappClick: () -> Unit,
@@ -328,14 +331,16 @@ private fun ActionButtonsRow(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Button(
-                onClick = onEditClick,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF0F2F4),
-                    contentColor = Color.Black
-                )
-            ) {
-                Text(text = stringResource(id = R.string.info_button_edit_member_detail))
+            if (viewModel.can(Permission.EDIT)) {
+                Button(
+                    onClick = onEditClick,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFF0F2F4),
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(text = stringResource(id = R.string.info_button_edit_member_detail))
+                }
             }
 
             // ======= BOTÓN CONTACTAR =======

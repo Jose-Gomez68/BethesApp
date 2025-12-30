@@ -48,7 +48,7 @@ class UserRegisterViewModel @Inject constructor(
         )
 
         val userSignIn = UserSignIn("",memberName,memberName, memberEmail, "68120568",
-            "68120568", 1, utilsFunctions.getCurrentDateTime(),
+            "68120568", 1, "USER", utilsFunctions.getCurrentDateTime(),
             utilsFunctions.getCurrentDateTime())
         viewModelScope.launch {
             val createdAccount = createAccountUseCase.invoke(userSignIn, member)

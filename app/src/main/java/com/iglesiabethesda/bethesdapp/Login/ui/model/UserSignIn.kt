@@ -10,9 +10,10 @@ data class UserSignIn(
     val password: String,
     val passwordConfirmation: String,
     val statusAccount: Int,
+    val userType: String = "USER",
     val createdDate: Date,
     val updateDate: Date
 ) {
     fun isNotEmpty() =
-        realName.isNotEmpty() && nickName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && passwordConfirmation.isNotEmpty()
+        realName.isNotEmpty() && nickName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && passwordConfirmation.isNotEmpty() && userType.isNotEmpty()
 }

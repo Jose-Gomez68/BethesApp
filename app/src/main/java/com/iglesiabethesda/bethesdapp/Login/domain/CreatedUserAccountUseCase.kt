@@ -33,6 +33,7 @@ class CreatedUserAccountUseCase @Inject constructor(
                     userAccount.password,
                     userAccount.repeatPassword,
                     1,
+                    "USER",
                     Date(),
                     Date()
                 )

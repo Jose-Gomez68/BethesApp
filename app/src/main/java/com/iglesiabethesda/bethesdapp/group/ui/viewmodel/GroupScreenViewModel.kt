@@ -7,6 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.domain.usecase.DeleteGroupUseCase
 import com.iglesiabethesda.bethesdapp.group.domain.usecase.GetGroupsUseCase
+import com.iglesiabethesda.bethesdapp.userandpermissions.domain.permissions
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.UserRole
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class GroupScreenViewModel @Inject constructor(
     private val groupListUseCase: GetGroupsUseCase,
-    private val deleteGroupByUid: DeleteGroupUseCase
+    private val deleteGroupByUid: DeleteGroupUseCase,
+    private val shredPref: SharedPreferencesConfig
 ): ViewModel(){
 
     private val _getGroups = mutableStateOf<Result<List<GroupModel>>?>(null)
@@ -59,5 +64,19 @@ class GroupScreenViewModel @Inject constructor(
     fun resetShowDeleteError() {
         _getGroupDelete.value = false
     }
+
+    private fun getCurrentUserRole(): UserRole {
+        return runCatching {
+            UserRole.valueOf(shredPref.getUserType())
+        }.getOrElse {
+            UserRole.USER // fallback seguro
+        }
+    }
+
+    fun can(permission: Permission): Boolean {
+        val role = getCurrentUserRole()
+        return role.permissions().contains(permission)
+    }
+
 
 }

@@ -49,6 +49,7 @@ import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.ui.viewmodel.MembersViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
 import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
 
@@ -155,7 +156,9 @@ private fun Screen(
 
         }
 
-        MultiOptionFAB(navController)
+        if (viewModel.can(Permission.CREATE)) {
+            MultiOptionFAB(navController)
+        }
 
     }
 }

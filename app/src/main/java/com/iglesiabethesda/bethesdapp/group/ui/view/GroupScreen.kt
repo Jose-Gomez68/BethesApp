@@ -54,6 +54,7 @@ import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupScreenViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
 import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
@@ -174,7 +175,20 @@ private fun Screen(
 
         }
 
-        FloatingActionButton(
+        if (viewModel.can(Permission.CREATE)) {
+            FloatingActionButton(
+                onClick = { navController.navigate("nuevoGrupo") },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Agregar")
+            }
+        }
+
+        /*FloatingActionButton(
             onClick = { navController.navigate("nuevoGrupo") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -183,7 +197,7 @@ private fun Screen(
             containerColor = MaterialTheme.colorScheme.primary
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Agregar")
-        }
+        }*/
 
         LoadingDialog(showProgress)
 

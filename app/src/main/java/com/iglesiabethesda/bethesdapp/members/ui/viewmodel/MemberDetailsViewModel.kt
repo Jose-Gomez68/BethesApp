@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.iglesiabethesda.bethesdapp.userandpermissions.domain.permissions
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.UserRole
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MemberDetailsViewModel @Inject constructor(
+    private val shredPref: SharedPreferencesConfig
 ) : ViewModel()  {
 
     fun sendEmail(context: Context, email: String) {
@@ -36,5 +40,17 @@ class MemberDetailsViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
+    private fun getCurrentUserRole(): UserRole {
+        return runCatching {
+            UserRole.valueOf(shredPref.getUserType())
+        }.getOrElse {
+            UserRole.USER // fallback seguro
+        }
+    }
+
+    fun can(permission: Permission): Boolean {
+        val role = getCurrentUserRole()
+        return role.permissions().contains(permission)
+    }
 
 }

@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.members.domain.usecase.DeleteMemberUseCase
 import com.iglesiabethesda.bethesdapp.members.domain.usecase.GetAllMembersListExcepByUidUseCase
+import com.iglesiabethesda.bethesdapp.userandpermissions.domain.permissions
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.UserRole
 import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +19,8 @@ import javax.inject.Inject
 class MembersViewModel @Inject constructor(
     private val getAllMembersListExcepByUidUseCase: GetAllMembersListExcepByUidUseCase,
     private val sharedPrf: SharedPreferencesConfig,
-    private val deleteMemberUseCase: DeleteMemberUseCase
+    private val deleteMemberUseCase: DeleteMemberUseCase,
+    private val shredPref: SharedPreferencesConfig
 ): ViewModel() {
 
     private val _getMembers = mutableStateOf<Result<List<MembersModel>>?>(null)
@@ -50,6 +54,19 @@ class MembersViewModel @Inject constructor(
             }
             _isLoading.value = false
         }
+    }
+
+    private fun getCurrentUserRole(): UserRole {
+        return runCatching {
+            UserRole.valueOf(shredPref.getUserType())
+        }.getOrElse {
+            UserRole.USER // fallback seguro
+        }
+    }
+
+    fun can(permission: Permission): Boolean {
+        val role = getCurrentUserRole()
+        return role.permissions().contains(permission)
     }
 
 }

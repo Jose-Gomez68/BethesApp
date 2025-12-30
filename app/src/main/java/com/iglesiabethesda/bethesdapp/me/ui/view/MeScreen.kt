@@ -130,7 +130,7 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
         }
 
-        // Aquí agregamos la lista como múltiples elementos
+        // Aquí agregamos la lista como múltiples elementos de los grupos
         items(11) { index ->
             ChurchActivity("Carlos García - M, 35") // Aquí puedes adaptar
         }
