@@ -122,8 +122,10 @@ private fun Screen(
             GroupList(
                 filteredGroups,
                 onDelete = { item ->
-                    deleteGroup = item
-                    showDeleteDialog = true
+                    if (viewModel.can(Permission.DELETE)) {
+                        deleteGroup = item
+                        showDeleteDialog = true
+                    }
                 },
                 onClick = {
                     // Gson con formato de fecha personalizado

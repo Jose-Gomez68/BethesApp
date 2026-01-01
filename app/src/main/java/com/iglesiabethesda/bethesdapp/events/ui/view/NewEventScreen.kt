@@ -513,10 +513,10 @@ fun UserSelectionScreen(
 fun SelectUsersScreen(viewModel: NewEventScreenViewModel) {
     // Lista de prueba de usuarios
     val users = listOf(
-        UserModel("uid1","María López","mlp","maria@mail.com",1, Date(), Date()),
-        UserModel("uid2","José Ramírez","jr","jose@mail.com",1, Date(), Date()),
-        UserModel("uid3","Laura González","lg","laura@mail.com",1, Date(), Date()),
-        UserModel("uid4","Carlos Pérez","cp","carlos@mail.com",1, Date(), Date())
+        UserModel("uid1","María López","mlp","maria@mail.com","USER",1, Date(), Date()),
+        UserModel("uid2","José Ramírez","jr","jose@mail.com","USER",1, Date(), Date()),
+        UserModel("uid3","Laura González","lg","laura@mail.com","USER",1, Date(), Date()),
+        UserModel("uid4","Carlos Pérez","cp","carlos@mail.com","USER",1, Date(), Date())
     )
 
     UserSelectionScreen(

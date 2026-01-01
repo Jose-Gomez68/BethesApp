@@ -57,6 +57,7 @@ import com.iglesiabethesda.bethesdapp.util.LoadingDialog
 import com.iglesiabethesda.bethesdapp.events.domain.model.EventModel
 import com.iglesiabethesda.bethesdapp.events.ui.viewmodel.EventScreenViewModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog
 import com.iglesiabethesda.bethesdapp.util.SimpleAlertDialog2
 import java.time.DayOfWeek
@@ -135,17 +136,18 @@ fun Screen(
             )
         }
 
-        FloatingActionButton(
-            onClick = { navController.navigate("NewEvent") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary
-        ) {
-            Icon(Icons.Filled.Add, contentDescription = "Agregar")
+        if (viewModel.can(Permission.CREATE)) {
+            FloatingActionButton(
+                onClick = { navController.navigate("NewEvent") },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Agregar")
+            }
         }
-
         LoadingDialog(showProgress)
 
         if (eventDeleteResult){
@@ -365,7 +367,7 @@ private fun ListEventDays(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
-                        .combinedClickable (
+                        .combinedClickable(
                             onClick = { onEventSelected(event) },
                             onLongClick = { onDeleteEvent(event) }
                         ),

@@ -125,9 +125,11 @@ private fun Screen(
                 filteredMembers,
                 navController,
                 onDelete = { member ->
-                    //viewModel.deleteMemberByUid(member.uid)
-                    memberToDelete = member
-                    showDeleteDialog = true
+                    if (viewModel.can(Permission.DELETE)) {
+                        //viewModel.deleteMemberByUid(member.uid)
+                        memberToDelete = member
+                        showDeleteDialog = true
+                    }
                 }
             )
 

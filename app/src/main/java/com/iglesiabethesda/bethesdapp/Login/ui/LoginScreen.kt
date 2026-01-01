@@ -102,6 +102,7 @@ private fun Screen(
                         sharedPrf.saveBirthDay(member.birthDay.toString())
                         sharedPrf.saveHobby(member.hobby)
                         sharedPrf.saveJob(member.job)
+                        sharedPrf.saveUserType(user.userType)
                         navController.navigate(Routes.HomeScreen.route)
                     }
                 }

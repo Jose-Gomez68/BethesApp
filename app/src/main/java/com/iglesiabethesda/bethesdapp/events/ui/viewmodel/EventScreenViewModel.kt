@@ -8,6 +8,10 @@ import com.iglesiabethesda.bethesdapp.data.network.GeneretedTokenMessageFCM
 import com.iglesiabethesda.bethesdapp.events.domain.model.EventModel
 import com.iglesiabethesda.bethesdapp.events.domain.usecase.DeleteEventByUidUseCase
 import com.iglesiabethesda.bethesdapp.events.domain.usecase.GetEventScreenUseCase
+import com.iglesiabethesda.bethesdapp.userandpermissions.domain.permissions
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.Permission
+import com.iglesiabethesda.bethesdapp.userandpermissions.enums.UserRole
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +20,8 @@ import javax.inject.Inject
 class EventScreenViewModel @Inject constructor(
     private val eventUseCase: GetEventScreenUseCase,
     private val deleteEventUseCase: DeleteEventByUidUseCase,
-    private val generatedTokenMessageFCM: GeneretedTokenMessageFCM
+    private val generatedTokenMessageFCM: GeneretedTokenMessageFCM,
+    private val shredPref: SharedPreferencesConfig
 ): ViewModel() {
 
     private val _getEvents = mutableStateOf<Result<List<EventModel>>?>(null)
@@ -51,6 +56,19 @@ class EventScreenViewModel @Inject constructor(
             }
             _isLoading.value = false
         }
+    }
+
+    private fun getCurrentUserRole(): UserRole {
+        return runCatching {
+            UserRole.valueOf(shredPref.getUserType())
+        }.getOrElse {
+            UserRole.USER // fallback seguro
+        }
+    }
+
+    fun can(permission: Permission): Boolean {
+        val role = getCurrentUserRole()
+        return role.permissions().contains(permission)
     }
 
 }
