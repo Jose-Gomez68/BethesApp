@@ -17,10 +17,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +35,7 @@ import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.navigationcompose.Routes
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.util.GifImageLocal
+import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
 
 /*
 * @Composable
@@ -55,6 +59,28 @@ private fun Screen(navController: NavController,viewModel: VerificationViewModel
 
     val showContinueEvent = viewModel.showContinueButton.observeAsState()
     val navigateEvent = viewModel.navigateToVerifyAccount.observeAsState()
+
+    val getUser by viewModel.getUserModel.observeAsState()
+    val getMember by viewModel.getMemberModel.observeAsState()
+    val context = LocalContext.current
+    val sharedPrf = SharedPreferencesConfig(context)
+
+    LaunchedEffect(showContinueEvent) {
+            snapshotFlow { Pair(getUser, getMember) }
+                .collect { (user, member) ->
+                    if (user != null && member != null) {
+                        sharedPrf.saveUserUid(user.uid)
+                        sharedPrf.saveUserName(user.nickName)
+                        sharedPrf.saveMemberUid(member.uid)
+                        sharedPrf.saveMemberName("${member.name} ${member.apPaterno} ${member.apMaterno}")
+                        sharedPrf.saveEmail(user.email)
+                        sharedPrf.saveBirthDay(member.birthDay.toString())
+                        sharedPrf.saveHobby(member.hobby)
+                        sharedPrf.saveJob(member.job)
+                        sharedPrf.saveUserType(user.userType)
+                    }
+                }
+    }
 
     /*PARA CUANDO SE CONFIRME LA CUENTA SE VA AL HOME AUTOMTICAMENTE
     LaunchedEffect(showContinueEvent.value?.peekContent()) {
