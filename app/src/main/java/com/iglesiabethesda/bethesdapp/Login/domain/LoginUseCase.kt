@@ -48,6 +48,7 @@ class LoginUseCase @Inject constructor(
             "",
             "",
             "",
+            "USER",
             0,
             Date(),
             Date()

@@ -7,6 +7,7 @@ data class UserModel(
     val realName: String,
     val nickName: String,
     val email: String,
+    val userType: String = "USER",
     val statusAccount: Int,
     val createdDate: Date,
     val updateDate: Date
