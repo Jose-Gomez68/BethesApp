@@ -43,6 +43,7 @@ import com.iglesiabethesda.bethesdapp.events.ui.view.EventScreen
 import com.iglesiabethesda.bethesdapp.events.ui.view.NewEventScreen
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupDetailSceen
+import com.iglesiabethesda.bethesdapp.group.ui.view.GroupEditScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
 import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
@@ -94,6 +95,7 @@ class MainActivity : ComponentActivity() {
                         Routes.MembersScreen.MemberDetailsScreen.route,
                         Routes.GroupsScreen.GroupRegisterScreen.route,
                         Routes.GroupsScreen.GroupDetailScreen.route,
+                        Routes.GroupsScreen.GroupEditScreen.route,
                         Routes.EventsScreen.NewEventScreen.route
                     )
 
@@ -133,6 +135,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
         Routes.GroupsScreen.route to "Grupos",
         Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.GroupsScreen.GroupDetailScreen.route to "Detalle de Grupo",
+        Routes.GroupsScreen.GroupEditScreen.route to "Editar de Grupo",
         Routes.EventsScreen.route to "Eventos",
         Routes.EventsScreen.NewEventScreen.route to "Nuevo Evento",
         Routes.MeScreen.route to "Perfil"
@@ -147,6 +150,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
         Routes.MembersScreen.MembersEditScreen.route,
         Routes.GroupsScreen.GroupRegisterScreen.route,
         Routes.GroupsScreen.GroupDetailScreen.route,
+        Routes.GroupsScreen.GroupEditScreen.route,
         Routes.EventsScreen.NewEventScreen.route
     )
 
@@ -290,6 +294,27 @@ fun NavigationGraph(
             )
 
             GroupDetailSceen(navController, group)
+        }
+
+        composable(
+            route = Routes.GroupsScreen.GroupEditScreen.route,
+            arguments = listOf(
+                navArgument("groupJson") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+
+            val groupJson = backStackEntry.arguments?.getString("groupJson")
+
+            val gson = GsonBuilder()
+                .setDateFormat("MMM dd, yyyy hh:mm:ss a")
+                .create()
+
+            val group = gson.fromJson(
+                URLDecoder.decode(groupJson, StandardCharsets.UTF_8.toString()),
+                GroupModel::class.java
+            )
+
+            GroupEditScreen(navController, group)
         }
         composable(Routes.EventsScreen.route) { EventScreen(navController = navController) }
         composable(Routes.EventsScreen.NewEventScreen.route) { NewEventScreen(navController) }

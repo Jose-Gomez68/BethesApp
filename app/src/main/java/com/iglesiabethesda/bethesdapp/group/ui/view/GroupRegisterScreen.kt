@@ -308,7 +308,7 @@ private fun FormRegister(viewModel: GroupRegisterViewModel) {
 }
 
 @Composable
-private fun UserGroupList(membersList: List<MembersModel>, onDelete: (String) -> Unit) {
+fun UserGroupList(membersList: List<MembersModel>, onDelete: (String) -> Unit) {
 
     if (membersList.isNotEmpty()) {
         LazyColumn(

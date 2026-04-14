@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -158,6 +159,8 @@ fun GroupDetailsScreen(
 
 
             }
+
+
         }
 
         // Description
@@ -221,6 +224,28 @@ fun GroupDetailsScreen(
         }
 
         Spacer(Modifier.height(40.dp))
+
+    Button(
+        onClick = {
+            // Acción al presionar
+
+            val gson = GsonBuilder()
+                .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                .create()
+
+            val groupJson = URLEncoder.encode(
+                gson.toJson(group),
+                StandardCharsets.UTF_8.toString()
+            )//REVISAR POR QUE CRASHEA AL PASAR EL DATO
+            navController.navigate("EditGrupo/${groupJson}")
+        },
+        modifier = Modifier
+            .fillMaxWidth()   // Hace el botón largo (ocupa todo el ancho)
+            .height(50.dp),   // Altura del botón (puedes ajustarla)
+        shape = RoundedCornerShape(12.dp) // Bordes redondeados (opcional)
+    ) {
+        Text(text = stringResource(id = R.string.group_detail_edit_send))
+    }
 
     LoadingDialog(showProgress)
 

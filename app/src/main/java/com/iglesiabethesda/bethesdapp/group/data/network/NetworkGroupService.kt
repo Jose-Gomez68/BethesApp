@@ -3,6 +3,8 @@ package com.iglesiabethesda.bethesdapp.group.data.network
 import com.iglesiabethesda.bethesdapp.data.network.FirebaseClient
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModelFirebase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -59,5 +61,38 @@ class NetworkGroupService @Inject constructor(
         }
     }
 
+    suspend fun updateGroupById(group: GroupModel): Boolean = runCatching {
+
+        val collection = firebase.db.collection(GROUP_COLLECTION)
+
+        val uid = group.uid ?: return@runCatching false
+
+        val updateGroup = hashMapOf<String, Any?>(
+            "uid" to uid,
+            "name" to group.name,
+            "description" to group.description,
+            "listMembers" to group.listMembers,
+            "statusGroup" to group.statusGroup,
+            "createdDate" to group.createdDate,
+            "updateDate" to group.updateDate,
+            "endDate" to group.endDate
+        )
+
+        collection.document(uid).update(updateGroup).await()
+
+    }.isSuccess
+
+    suspend fun getGroupById(uid: String): Result<GroupModel> {
+        return runCatching {
+            val document = firebase.db.collection(GROUP_COLLECTION)
+                .document(uid)
+                .get()
+                .await()
+
+            document.toObject(GroupModelFirebase::class.java)
+                ?.toModel()
+                ?: throw Exception("Grupo no encontrado")
+        }
+    }
 
 }

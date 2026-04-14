@@ -105,6 +105,7 @@
     <string name="group_detail_created_date">Creado el "</string>
     <string name="group_detail_end_date">Cerrado el "</string>
     <string name="group_detail_end_date2">En curso "</string>
+    <string name="group_detail_edit_send">Editar "</string>
 
 
 </resources>
