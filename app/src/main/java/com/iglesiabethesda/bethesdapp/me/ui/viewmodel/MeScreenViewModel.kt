@@ -1,7 +1,12 @@
 package com.iglesiabethesda.bethesdapp.me.ui.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
+import com.iglesiabethesda.bethesdapp.group.domain.usecase.GetGroupsByUidUserUseCase
 import com.iglesiabethesda.bethesdapp.me.domain.MeScreenLogoutUseCase
 import com.iglesiabethesda.bethesdapp.me.ui.model.UserUiStateModel
 import com.iglesiabethesda.bethesdapp.util.SharedPreferencesConfig
@@ -15,11 +20,18 @@ import javax.inject.Inject
 @HiltViewModel
 class MeScreenViewModel @Inject constructor(
     private val meScreenLogoutUseCase: MeScreenLogoutUseCase,
-    private val pref: SharedPreferencesConfig
+    private val pref: SharedPreferencesConfig,
+    private val groupByIdUser: GetGroupsByUidUserUseCase
 ): ViewModel() {
 
     private val _logoutState = MutableStateFlow<LogoutState>(LogoutState.Idle)
     val logoutState: StateFlow<LogoutState> = _logoutState
+
+    private val _getGroups = mutableStateOf<Result<List<GroupModel>>?>(null)
+    val getGroups: State<Result<List<GroupModel>>?> = _getGroups
+
+    private val _isLoading = mutableStateOf(false)
+    val isLoading: State<Boolean> = _isLoading
 
     /*private val _userName = MutableStateFlow("")
     val userName: StateFlow<String> = _userName
@@ -55,12 +67,27 @@ class MeScreenViewModel @Inject constructor(
             job = pref.getJob()
 
         )
+        getGroups()
         /*_userName.value = pref.getUserName()
         _name.value = pref.getMemberName()
         _userType.value = pref.getUserType()
         _uidUser.value = pref.getUserUid()
         _uidMember.value = pref.getMemberUid()
         _userEmail.value = pref.getEmail()*/
+    }
+
+    fun getGroups() {
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            val result = groupByIdUser.invoke(pref.getMemberUid())
+            _getGroups.value = result
+            result.onSuccess {
+                Log.e("AQUI", ""+it)//revisar por que no llegan nada de listado
+            }
+            _isLoading.value = false
+        }
+
     }
 
     fun logout() {

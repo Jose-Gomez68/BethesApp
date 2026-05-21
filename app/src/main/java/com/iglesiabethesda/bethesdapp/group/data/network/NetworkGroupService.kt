@@ -1,10 +1,9 @@
 package com.iglesiabethesda.bethesdapp.group.data.network
 
+import android.util.Log
 import com.iglesiabethesda.bethesdapp.data.network.FirebaseClient
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModelFirebase
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -94,5 +93,25 @@ class NetworkGroupService @Inject constructor(
                 ?: throw Exception("Grupo no encontrado")
         }
     }
+
+    suspend fun getGroupByUidUser(uidUser: String): Result<List<GroupModel>> =
+        runCatching {
+            val cleanUid = uidUser.trim()
+
+            Log.e("FIRESTORE_DEBUG", "UID enviado: '$cleanUid'")
+
+            val snapshot = firebase.db.collection(GROUP_COLLECTION)
+                .whereArrayContains("listMembers", cleanUid)
+                .get()
+                .await()
+
+            Log.e("FIRESTORE_DEBUG", "Docs encontrados: ${snapshot.size()}")
+
+            snapshot.documents.mapNotNull { doc ->
+                Log.e("FIRESTORE_DEBUG", "Doc: ${doc.data}")
+                doc.toObject(GroupModelFirebase::class.java)?.toModel()
+            }.filter { it.statusGroup != 3 }
+        }
+
 
 }

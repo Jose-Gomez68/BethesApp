@@ -29,6 +29,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +45,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.iglesiabethesda.bethesdapp.R
+import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.me.ui.model.UserUiStateModel
 import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.LogoutState
 import com.iglesiabethesda.bethesdapp.me.ui.viewmodel.MeScreenViewModel
@@ -64,6 +67,9 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
     val logoutState by viewModel.logoutState.collectAsState()
     val context = LocalContext.current
     val userDataUiState by viewModel.uiState.collectAsState()
+    val showProgress by viewModel.isLoading
+    val groupsResult by viewModel.getGroups
+    val groups = remember { mutableStateListOf<GroupModel>() }
     /*val userName by viewModel.userName.collectAsState()
     val name by viewModel.name.collectAsState()
     val email by viewModel.userEmail.collectAsState()*/
@@ -99,6 +105,11 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
 
     }
 
+    groupsResult?.onSuccess { group ->
+        groups.clear()
+        groups.addAll(group)
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -131,8 +142,9 @@ fun Screen(viewModel: MeScreenViewModel, navController: NavController) {
         }
 
         // Aquí agregamos la lista como múltiples elementos de los grupos
-        items(11) { index ->
-            ChurchActivity("Carlos García - M, 35") // Aquí puedes adaptar
+        items(groups.size) { index ->
+            val gr = groups[index]
+            ChurchActivity(gr) // Aquí puedes adaptar
         }
 
         item {
@@ -440,7 +452,7 @@ fun LogoutLoadingDialog() {
 
 
 @Composable
-private fun ChurchActivity(text: String) {
+private fun ChurchActivity(gr: GroupModel) {
 
     Column(
         modifier = Modifier
@@ -448,7 +460,7 @@ private fun ChurchActivity(text: String) {
             .fillMaxWidth()
     ) {
         Text(
-            text = "Community Group",
+            text = gr.name,
             style = typography.bodyLarge,
             color = Color.Black,
             fontSize = 16.sp,
@@ -456,7 +468,7 @@ private fun ChurchActivity(text: String) {
         )
 
         Text(
-            text = "Every Thursday 7:00PM",
+            text = gr.description,
             style = typography.bodySmall.copy(fontSize = 12.sp),
             color = Color.Gray
         )
