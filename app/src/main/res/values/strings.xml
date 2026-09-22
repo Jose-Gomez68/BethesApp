@@ -23,7 +23,8 @@
     <!--MEMBER SCREEN-->
     <string name="title_search_member_screen">Buscar Miembros</string>
     <string name="title_fl_button1_member_screen">Nuevo usuario</string>
-    <string name="title_fl_button2_member_screen">Registrar Visita</string>
+    <string name="title_fl_button2_member_screen">Registrar visita</string>
+    <string name="title_fl_button3_member_screen">Pase de lista</string>
     <string name="title_dialog_delete_member_screen">Eliminar miembro</string>
     <string name="message_dialog_delete_member_screen">
     ¿Deseas eliminar a %1$s?
@@ -106,6 +107,7 @@
     <string name="group_detail_end_date">Cerrado el "</string>
     <string name="group_detail_end_date2">En curso "</string>
     <string name="group_detail_edit_send">Editar "</string>
+    <string name="group_detail_AttendanceList_send">Pase de Lista</string>
 
 
 </resources>
