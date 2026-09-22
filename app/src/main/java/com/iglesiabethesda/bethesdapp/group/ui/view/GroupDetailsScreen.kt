@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,6 +26,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,6 +47,7 @@ import com.google.gson.GsonBuilder
 import com.iglesiabethesda.bethesdapp.R
 import com.iglesiabethesda.bethesdapp.group.domain.model.GroupModel
 import com.iglesiabethesda.bethesdapp.group.ui.viewmodel.GroupDetailsViewModel
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersListModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundColorApp
 import com.iglesiabethesda.bethesdapp.ui.theme.backgroundGrayColorApp
@@ -60,7 +66,7 @@ fun GroupDetailSceen(
 }
 
 @Composable
-private fun Screen(group: GroupModel, navController: NavHostController) {
+private fun Screen(group: GroupModel, navController: NavHostController, viewModel: GroupDetailsViewModel = hiltViewModel(),) {
 
     Box(
         modifier = Modifier
@@ -78,9 +84,11 @@ private fun Screen(group: GroupModel, navController: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            GroupDetailsScreen(group, navController)
+            GroupDetailsScreen(group, navController, viewModel)
 
         }
+
+
 
     }
 
@@ -90,7 +98,7 @@ private fun Screen(group: GroupModel, navController: NavHostController) {
 fun GroupDetailsScreen(
     group: GroupModel,
     navController: NavHostController,
-    viewModel: GroupDetailsViewModel = hiltViewModel(),
+    viewModel: GroupDetailsViewModel
 ) {
 
     LaunchedEffect(Unit) {
@@ -157,6 +165,43 @@ fun GroupDetailsScreen(
                     }
                 }
 
+                /*FloatingActionButton(
+                    onClick = {
+                        //navController.navigate("AttendanceListScreen")
+                        if (navController != null) {
+                            navController!!.let {
+                                // Gson con formato de fecha personalizado
+                                val gson = GsonBuilder()
+                                    .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                                    .create()
+
+                                val membersList = MembersListModel(
+                                    list = members
+                                )
+
+                                // Convertir el objeto a JSON
+                                val membersJson = URLEncoder.encode(
+                                    gson.toJson(membersList),
+                                    StandardCharsets.UTF_8.toString()
+                                )
+
+                                // Navegar pasando el JSON
+                                it.navigate("AttendanceListScreen/$membersJson/${group.uid}")
+                            }
+                        }else {
+                            *//*if (onClick != null) {
+                                onClick(member)  // 🔥 devolución al padre
+                            }*//*
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp),
+                    shape = CircleShape,
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = "Agregar")
+                }*/
 
             }
 
@@ -227,6 +272,40 @@ fun GroupDetailsScreen(
 
     Button(
         onClick = {
+            if (navController != null) {
+                navController!!.let {
+                    // Gson con formato de fecha personalizado
+                    val gson = GsonBuilder()
+                        .setDateFormat("MMM dd, yyyy hh:mm:ss a") // ejemplo: "Nov 10, 1992 12:00:00 AM"
+                        .create()
+
+                    val membersList = MembersListModel(
+                        list = members
+                    )
+
+                    // Convertir el objeto a JSON
+                    val membersJson = URLEncoder.encode(
+                        gson.toJson(membersList),
+                        StandardCharsets.UTF_8.toString()
+                    )
+
+                    // Navegar pasando el JSON
+                    it.navigate("AttendanceListScreen/$membersJson/${group.uid}")
+                }
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()   // Hace el botón largo (ocupa todo el ancho)
+            .height(50.dp),   // Altura del botón (puedes ajustarla)
+        shape = RoundedCornerShape(12.dp) // Bordes redondeados (opcional)
+    ) {
+        Text(text = stringResource(id = R.string.group_detail_AttendanceList_send))
+    }
+
+    Spacer(Modifier.height(30.dp))
+
+    Button(
+        onClick = {
             // Acción al presionar
 
             val gson = GsonBuilder()
@@ -246,6 +325,8 @@ fun GroupDetailsScreen(
     ) {
         Text(text = stringResource(id = R.string.group_detail_edit_send))
     }
+
+    Spacer(Modifier.height(20.dp))
 
     LoadingDialog(showProgress)
 

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -234,6 +235,16 @@ fun MultiOptionFAB(navController: NavHostController) {
                         expanded = false
                     }
                 )
+
+                /*FabOption(
+                    icon = Icons.Filled.List,
+                    text = stringResource(id = R.string.title_fl_button3_member_screen),
+                    onClick = {
+                        // Acción 3
+                        expanded = false
+                        navController.navigate("AttendanceListScreen")
+                    }
+                )*/
 
                 Spacer(modifier = Modifier.height(10.dp))
             }

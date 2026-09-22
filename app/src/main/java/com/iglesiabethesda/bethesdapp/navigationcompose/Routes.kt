@@ -13,6 +13,7 @@ sealed class Routes (val title: String, val icon: Int, val route: String) {
         object MembersRegisterScreen: Routes( "RegisterUser", R.drawable.ic_users, "RegistrarUsuario" )
         object MembersEditScreen: Routes( "EditUser", R.drawable.ic_users, "MembersEditScreen/{memberJson}" )
         object MemberDetailsScreen: Routes( "Detalle del Persona", R.drawable.ic_users, "MemberDetailsScreen/{memberJson}" )
+        object AttendanceListScreen: Routes( "Pase de Lista", R.drawable.ic_users, "AttendanceListScreen/{membersJson}/{groupUid}" )
     }
     object EventsScreen: Routes( "eventos", R.drawable.ic_events, "eventos" ){
         object NewEventScreen: Routes("Nuevo Evento", R.drawable.ic_events, "NewEvent")

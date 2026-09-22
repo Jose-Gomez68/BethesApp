@@ -48,7 +48,9 @@ import com.iglesiabethesda.bethesdapp.group.ui.view.GroupRegisterScreen
 import com.iglesiabethesda.bethesdapp.group.ui.view.GroupScreen
 import com.iglesiabethesda.bethesdapp.home.ui.view.HomeScreen
 import com.iglesiabethesda.bethesdapp.me.ui.view.MeScreen
+import com.iglesiabethesda.bethesdapp.members.domain.model.MembersListModel
 import com.iglesiabethesda.bethesdapp.members.domain.model.MembersModel
+import com.iglesiabethesda.bethesdapp.members.ui.view.AttendanceListScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MemberDetailsScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersEditScreen
 import com.iglesiabethesda.bethesdapp.members.ui.view.MembersRegisterScreen
@@ -93,6 +95,7 @@ class MainActivity : ComponentActivity() {
                     val hideBottomBar = currentRoute in listOf(
                         Routes.MembersScreen.MembersRegisterScreen.route,
                         Routes.MembersScreen.MemberDetailsScreen.route,
+                        Routes.MembersScreen.AttendanceListScreen.route,
                         Routes.GroupsScreen.GroupRegisterScreen.route,
                         Routes.GroupsScreen.GroupDetailScreen.route,
                         Routes.GroupsScreen.GroupEditScreen.route,
@@ -132,6 +135,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
         Routes.MembersScreen.MembersRegisterScreen.route to "Registrar Usuario",
         Routes.MembersScreen.MemberDetailsScreen.route to "Detalles de la Persona",
         Routes.MembersScreen.MembersEditScreen.route to "Editar Persona",
+        Routes.MembersScreen.AttendanceListScreen.route to "Pase de Lista",
         Routes.GroupsScreen.route to "Grupos",
         Routes.GroupsScreen.GroupRegisterScreen.route to "Registrar Grupo",
         Routes.GroupsScreen.GroupDetailScreen.route to "Detalle de Grupo",
@@ -148,6 +152,7 @@ fun Toolbar(currentRoute: String, navController: NavController) {
         Routes.MembersScreen.MembersRegisterScreen.route,
         Routes.MembersScreen.MemberDetailsScreen.route,
         Routes.MembersScreen.MembersEditScreen.route,
+        Routes.MembersScreen.AttendanceListScreen.route,
         Routes.GroupsScreen.GroupRegisterScreen.route,
         Routes.GroupsScreen.GroupDetailScreen.route,
         Routes.GroupsScreen.GroupEditScreen.route,
@@ -268,6 +273,33 @@ fun NavigationGraph(
                 MembersModel::class.java
             )
             MembersEditScreen(navController, member)
+        }
+        composable(
+            Routes.MembersScreen.AttendanceListScreen.route,
+            arguments = listOf(
+                navArgument("membersJson") { type = NavType.StringType },
+                navArgument("groupUid") {
+                    type = NavType.StringType
+                }
+            )
+        ) {backStackEntry ->
+
+            val membersJson = backStackEntry.arguments?.getString("membersJson")
+            val groupUid = backStackEntry.arguments?.getString("groupUid")
+
+            val gson = GsonBuilder()
+                .setDateFormat("MMM dd, yyyy hh:mm:ss a")
+                .create()
+
+            val members = gson.fromJson(
+                URLDecoder.decode(membersJson, StandardCharsets.UTF_8.toString()),
+                MembersListModel::class.java
+            )
+            AttendanceListScreen(
+                navController,
+                members,
+                groupUid ?: ""
+            )
         }
         composable(Routes.GroupsScreen.route) { GroupScreen(navController) }
         composable(
